@@ -20,5 +20,3 @@ deploy:
 
 .PHONY: wast abi clean build
 
-
-
