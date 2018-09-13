@@ -277,6 +277,9 @@ namespace owdin {
     }
 
     void owdinnetwork::logging( account_name account, uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused, uint16_t statuscode, string status, string message ) {
+        /*
+         * device usage logging
+         */
         require_auth( account );
         logging_controller.logging( account, cpu, memory, disk, bandwidth, fsused, statuscode, status, message );
     }

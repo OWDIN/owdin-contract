@@ -3,7 +3,7 @@
 using namespace std;
 
 namespace owdin {
-    //@abi table currencyaaa i64
+    //@abi table stat i64
     struct currency {
         asset        supply;
         asset        max_supply;
