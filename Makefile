@@ -6,7 +6,7 @@ wast:
 abi:
 	/usr/local/eosio/bin/eosiocpp -g owdinnetwork/owdinnetwork.abi owdinnetwork/owdinnetwork.cpp  > log/abi_stdout.txt 2> log/abi_stderr.txt
 
-build: wast abi
+build: wast
 
 cl:
 	rm -f log/*
@@ -18,7 +18,7 @@ cw:
 ca:
 	rm -f owdinnetwork/owdinnetwork.abi
 
-clean: ca cl cw
+clean: cl cw
 
 deploy:
 	cli set contract owdinnetwork owdinnetwork/ 
