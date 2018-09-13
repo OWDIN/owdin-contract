@@ -5,7 +5,7 @@ namespace owdin {
         /*
          * test action
          */
-        const char* ver_info = "v0.0.1";
+        const char* ver_info = "v0.0.2";
         print( "[ ", ver_info, " - ", name{_self}, " ] : ", name{account} );
     }
 
@@ -180,4 +180,5 @@ namespace owdin {
 
 }
 
-EOSIO_ABI( owdin::owdinnetwork, (debug)(create)(issue)(transfer)(reward)(burn) )
+EOSIO_ABI( owdin::owdinnetwork, (debug)(create)(issue)(transfer)(reward)(burn)(signup)(reset)(activate) )
+
