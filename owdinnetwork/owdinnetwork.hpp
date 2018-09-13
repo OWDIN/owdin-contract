@@ -8,6 +8,7 @@
 #include "controller/config/owdin_process.hpp"
 #include "controller/config/owdin_system.hpp"
 #include "controller/device/owdin_device.hpp"
+#include "controller/logging/owdin_logging.hpp"
 
 #include "models/account_index/account_index.hpp"
 #include "models/config_index/filesystem_index.hpp"
@@ -33,6 +34,7 @@ namespace owdin {
             owdin_network    net_controller;
             owdin_process    proc_controller;
             owdin_system     sys_controller;
+            owdin_logging    logging_controller;
             owdin_device     device_controller;
         public:
             owdinnetwork( account_name self ) : contract( self )
@@ -40,6 +42,7 @@ namespace owdin {
             , net_controller( _self )
             , proc_controller( _self )
             , sys_controller( _self )
+            , logging_controller( _self )
             , device_controller( _self ) { };
 
             //@abi action
@@ -94,6 +97,9 @@ namespace owdin {
             void clear( account_name account, uint8_t object_type, string memo );
             //@abi action
             void update( account_name account, uint8_t object_type, string stat, string memo );
+
+            //@abi action
+            void logging( account_name account, uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused, uint16_t statuscode, string status, string message );
     };
 }
 

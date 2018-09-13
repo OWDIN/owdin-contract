@@ -275,7 +275,11 @@ namespace owdin {
             eosio_assert( false, "object type error" );
         }
     }
+
+    void owdinnetwork::logging( account_name account, uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused, uint16_t statuscode, string status, string message ) {
+        require_auth( account );
+        logging_controller.logging( account, cpu, memory, disk, bandwidth, fsused, statuscode, status, message );
+    }
 }
 
-EOSIO_ABI( owdin::owdinnetwork, (debug)(create)(issue)(transfer)(reward)(burn)(signup)(reset)(activate)(set)(remove)(initial)(clear)(update) )
-
+EOSIO_ABI( owdin::owdinnetwork, (debug)(create)(issue)(transfer)(reward)(burn)(signup)(reset)(activate)(set)(remove)(initial)(clear)(update)(logging) )
