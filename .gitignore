@@ -4,3 +4,10 @@
 # Editor
 .vscode/
 
+# enviroment 
+log/*
+testcase/*
+
+# compiled file
+owdinnetwork/owdinnetwork.wasm
+owdinnetwork/owdinnetwork.wast
