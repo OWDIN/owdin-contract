@@ -2,8 +2,8 @@
 
 #include "models/device_index/device_index.hpp"
 
-using std::string;
-using eosio::print;
+using namespace std;
+using namespace eosio;
 
 namespace owdin {
     class owdin_device {
@@ -17,9 +17,9 @@ namespace owdin {
                 time current_time = now();
                 uint64_t block_num = tapos_block_num();
 
-                deviceIndex owdin_device( self, account );
+                deviceIndex dix( self, account );
 
-                owdin_device.emplace( self, [&]( auto& s ) {
+                dix.emplace( self, [&]( auto& s ) {
                     s.account = account;
                     s.uidx = uidx;
                     s.pubkey = pubkey;
@@ -41,12 +41,12 @@ namespace owdin {
                 time current_time = now();
                 uint64_t block_num = tapos_block_num();
                 
-                deviceIndex owdin_device( self, account );
+                deviceIndex dix( self, account );
 
-                auto itr = owdin_device.find( account );
-                eosio_assert( itr != owdin_device.end(), "can not found account" );
+                auto itr = dix.find( account );
+                eosio_assert( itr != dix.end(), "can not found account" );
 
-                owdin_device.modify( itr, self, [&]( auto& s ) {
+                dix.modify( itr, self, [&]( auto& s ) {
                     s.uidx = uidx;
                     s.pubkey = pubkey;
                     s.idx = idx;
@@ -65,12 +65,12 @@ namespace owdin {
                 time current_time = now();
                 uint64_t block_num = tapos_block_num();
                 
-                deviceIndex owdin_device( self, account );
+                deviceIndex dix( self, account );
 
-                auto itr = owdin_device.find( account );
-                eosio_assert( itr != owdin_device.end(), "can not found account" );
+                auto itr = dix.find( account );
+                eosio_assert( itr != dix.end(), "can not found account" );
 
-                owdin_device.modify( itr, self, [&]( auto& s ) {
+                dix.modify( itr, self, [&]( auto& s ) {
                     s.isactive = isactive;
                     s.updated = current_time;
                     s.update_block = block_num;                    

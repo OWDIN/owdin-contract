@@ -178,7 +178,104 @@ namespace owdin {
         return ac.balance;
     }
 
+
+
+    void owdinnetwork::set( account_name account, string playbook, uint8_t object_type, string memo ) {
+        /*
+         * config setting
+         */
+        require_auth( _self );
+
+        if (object_type == OBJECT_STORAGE ) {
+            fs_controller.set( account, playbook, memo );
+        } else if (object_type == OBJECT_NETWORK ) {
+            net_controller.set( account, playbook, memo );
+        } else if (object_type == OBJECT_SYSTEM ) {
+            proc_controller.set( account, playbook, memo );
+        } else if (object_type == OBJECT_PROCESS ) {
+            sys_controller.set( account, playbook, memo );
+        } else {
+            eosio_assert( false, "object type error" );
+        }
+
+    }
+
+    void owdinnetwork::remove( account_name account, uint8_t object_type, string memo ) {
+        /*
+         * config remove (erase)
+         */
+        require_auth( _self );
+
+        if (object_type == OBJECT_STORAGE ) {
+            fs_controller.remove( account, memo );
+        } else if (object_type == OBJECT_NETWORK ) {
+            net_controller.remove( account, memo );
+        } else if (object_type == OBJECT_SYSTEM ) {
+            proc_controller.remove( account, memo );
+        } else if (object_type == OBJECT_PROCESS ) {
+            sys_controller.remove( account, memo );
+        } else {
+            eosio_assert( false, "object type error" );
+        }
+    }
+
+    void owdinnetwork::initial( account_name account, uint8_t object_type, string memo ) {
+        /*
+         * config initialize
+         */
+        require_auth( _self );
+
+        if (object_type == OBJECT_STORAGE ) {
+            fs_controller.initial( account, memo );
+        } else if (object_type == OBJECT_NETWORK ) {
+            net_controller.initial( account, memo );
+        } else if (object_type == OBJECT_SYSTEM ) {
+            proc_controller.initial( account, memo );
+        } else if (object_type == OBJECT_PROCESS ) {
+            sys_controller.initial( account, memo );
+        } else {
+            eosio_assert( false, "object type error" );
+        }
+    }
+
+    void owdinnetwork::clear( account_name account, uint8_t object_type, string memo ) {
+        /*
+         * config clear
+         */
+        require_auth( _self );
+
+        if (object_type == OBJECT_STORAGE ) {
+            fs_controller.clear( account, memo );
+        } else if (object_type == OBJECT_NETWORK ) {
+            net_controller.clear( account, memo );
+        } else if (object_type == OBJECT_SYSTEM ) {
+            proc_controller.clear( account, memo );
+        } else if (object_type == OBJECT_PROCESS ) {
+            sys_controller.clear( account, memo );
+        } else {
+            eosio_assert( false, "object type error" );
+        }
+    }
+
+    void owdinnetwork::update( account_name account, uint8_t object_type, string stat, string memo ) {
+        /*
+         * config apply result update
+         */
+        require_auth( account );
+
+        if (object_type == OBJECT_STORAGE ) {
+            fs_controller.update( account, stat, memo );
+        } else if (object_type == OBJECT_NETWORK ) {
+            net_controller.update( account, stat, memo );
+        } else if (object_type == OBJECT_SYSTEM ) {
+            proc_controller.update( account, stat, memo );
+        } else if (object_type == OBJECT_PROCESS ) {
+            sys_controller.update( account, stat, memo );
+        } else {
+            eosio_assert( false, "object type error" );
+        }
+    }
 }
 
-EOSIO_ABI( owdin::owdinnetwork, (debug)(create)(issue)(transfer)(reward)(burn)(signup)(reset)(activate) )
+EOSIO_ABI( owdin::owdinnetwork, (debug)(create)(issue)(transfer)(reward)(burn)(signup)(reset)(activate)(set)(remove)(initial)(clear)(update) )
 

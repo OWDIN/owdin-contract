@@ -2,12 +2,22 @@
 #include <eosiolib/eosio.hpp>
 #include <eosiolib/transaction.hpp>
 
+
+#include "controller/config/owdin_filesystem.hpp"
+#include "controller/config/owdin_network.hpp"
+#include "controller/config/owdin_process.hpp"
+#include "controller/config/owdin_system.hpp"
 #include "controller/device/owdin_device.hpp"
 
 #include "models/account_index/account_index.hpp"
+#include "models/config_index/filesystem_index.hpp"
+#include "models/config_index/network_index.hpp"
+#include "models/config_index/process_index.hpp"
+#include "models/config_index/system_index.hpp"
 #include "models/device_index/device_index.hpp"
 #include "models/economy_index/currency_index.hpp"
 
+#include "define.hpp"
 
 using namespace owdin;
 using namespace eosio;
@@ -17,10 +27,19 @@ namespace owdin {
     class owdinnetwork : public contract {
         private:
             using contract::contract;
-            
-            owdin_device device_controller;
+
+
+            owdin_filesystem fs_controller;
+            owdin_network    net_controller;
+            owdin_process    proc_controller;
+            owdin_system     sys_controller;
+            owdin_device     device_controller;
         public:
             owdinnetwork( account_name self ) : contract( self )
+            , fs_controller( _self )
+            , net_controller( _self )
+            , proc_controller( _self )
+            , sys_controller( _self )
             , device_controller( _self ) { };
 
             //@abi action
@@ -64,6 +83,17 @@ namespace owdin {
                 require_auth( account );
                 device_controller.change_activate( account, isactive );
             }
+
+            //@abi action
+            void set( account_name account, string playbook, uint8_t object_type, string memo );
+            //@abi action
+            void remove( account_name account, uint8_t object_type, string memo );
+            //@abi action
+            void initial( account_name account, uint8_t object_type, string memo );
+            //@abi action
+            void clear( account_name account, uint8_t object_type, string memo );
+            //@abi action
+            void update( account_name account, uint8_t object_type, string stat, string memo );
     };
 }
 
