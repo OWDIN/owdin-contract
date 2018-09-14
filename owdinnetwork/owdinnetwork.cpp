@@ -186,6 +186,8 @@ namespace owdin {
          */
         require_auth( _self );
 
+        eosio_assert( memo.size() <= 256, "memo has more than 256 bytes" );
+
         if (object_type == OBJECT_STORAGE ) {
             fs_controller.set( account, playbook, memo );
         } else if (object_type == OBJECT_NETWORK ) {
@@ -206,6 +208,8 @@ namespace owdin {
          */
         require_auth( _self );
 
+        eosio_assert( memo.size() <= 256, "memo has more than 256 bytes" );
+
         if (object_type == OBJECT_STORAGE ) {
             fs_controller.remove( account, memo );
         } else if (object_type == OBJECT_NETWORK ) {
@@ -224,6 +228,8 @@ namespace owdin {
          * config initialize
          */
         require_auth( _self );
+
+        eosio_assert( memo.size() <= 256, "memo has more than 256 bytes" );
 
         if (object_type == OBJECT_STORAGE ) {
             fs_controller.initial( account, memo );
@@ -244,6 +250,8 @@ namespace owdin {
          */
         require_auth( _self );
 
+        eosio_assert( memo.size() <= 256, "memo has more than 256 bytes" );
+
         if (object_type == OBJECT_STORAGE ) {
             fs_controller.clear( account, memo );
         } else if (object_type == OBJECT_NETWORK ) {
@@ -262,6 +270,9 @@ namespace owdin {
          * config apply result update
          */
         require_auth( account );
+
+        eosio_assert( stat.size() <= 256, "status has more than 256 bytes" );
+        eosio_assert( memo.size() <= 256, "message has more than 256 bytes" );
 
         if (object_type == OBJECT_STORAGE ) {
             fs_controller.update( account, stat, memo );

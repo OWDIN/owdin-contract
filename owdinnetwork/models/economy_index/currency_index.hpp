@@ -1,6 +1,7 @@
 #pragma once
 
 using namespace std;
+using namespace eosio;
 
 namespace owdin {
     //@abi table stat i64
