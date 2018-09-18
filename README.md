@@ -1,6 +1,6 @@
 # OWDIN-PORT EOS Smart Contract
 ---
-[![OWDIN NETWORK](doc/owdinlogo.png "OWDIN NETWORK")](https://owdin.network/)
+[![OWDIN NETWORK](doc/OWDINLOGO.png "OWDIN NETWORK")](https://owdin.network/)
 
 ## about
 ---
