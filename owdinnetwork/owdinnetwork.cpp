@@ -1,5 +1,9 @@
 #include "owdinnetwork.hpp"
 
+#include "controller/staking/owdin_stake.hpp"
+#include "controller/staking/owdin_regpool.hpp"
+#include "controller/staking/owdin_unstake.hpp"
+
 namespace owdin {
     void owdinnetwork::debug( account_name account ) {
         /*
@@ -292,8 +296,47 @@ namespace owdin {
          * device usage logging
          */
         require_auth( account );
+
+        eosio_assert( cpu > 0, "cpu must be positive" );
+        eosio_assert( memory > 0, "memory must be positive" );
+        eosio_assert( disk > 0, "disk must be positive" );
+        eosio_assert( bandwidth > 0, "bandwidth must be positive" );
+        eosio_assert( fsused > 0, "fsused must be positive" );
+        eosio_assert( disk > fsused, "file system used size has more than disk size" );
+        eosio_assert( status.size() <= 256, "status has more than 256 bytes" );
+        eosio_assert( message.size() <= 256, "message has more than 256 bytes" );
+
         logging_controller.logging( account, cpu, memory, disk, bandwidth, fsused, statuscode, status, message );
+    }
+
+    void owdinnetwork::price( uint8_t resource, asset price ) {
+        /*
+         * set resource price
+         */
+        require_auth( _self );
+
+        auto sym = price.symbol.name();
+        stats statstable( _self, sym );
+        const auto& st = statstable.get( sym );
+        eosio_assert( price.symbol == st.supply.symbol, "symbol precision mismatch" );
+
+        time current_time = now();
+        pricingIndex pricetable( _self, _self );
+
+        auto itr = pricetable.find( resource );
+        if ( itr != pricetable.end() ) {
+            pricetable.modify( itr, _self, [&]( auto& s ) {
+                s.price = price;
+                s.updated = current_time;
+            });
+        } else {
+            pricetable.emplace( _self, [&]( auto& s ) {
+                s.resource = resource;
+                s.price = price;
+                s.updated = current_time;
+            });
+        }
     }
 }
 
-EOSIO_ABI( owdin::owdinnetwork, (debug)(create)(issue)(transfer)(reward)(burn)(signup)(reset)(activate)(set)(remove)(initial)(clear)(update)(logging) )
+EOSIO_ABI( owdin::owdinnetwork, (debug)(create)(issue)(transfer)(reward)(burn)(signup)(reset)(activate)(set)(remove)(initial)(clear)(update)(logging)(regpool)(staking)(unstaking)(price) )

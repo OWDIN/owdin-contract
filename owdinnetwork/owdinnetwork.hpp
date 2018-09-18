@@ -1,7 +1,8 @@
+#pragma once
+
 #include <eosiolib/asset.hpp>
 #include <eosiolib/eosio.hpp>
 #include <eosiolib/transaction.hpp>
-
 
 #include "controller/config/owdin_filesystem.hpp"
 #include "controller/config/owdin_network.hpp"
@@ -12,6 +13,11 @@
 
 #include "models/account_index/account_index.hpp"
 #include "models/economy_index/currency_index.hpp"
+#include "models/resource_index/amount_index.hpp"
+#include "models/resource_index/pool_index.hpp"
+#include "models/resource_index/pricing_index.hpp"
+#include "models/resource_index/stake_index.hpp"
+#include "models/resource_index/total_index.hpp"
 
 #include "define.hpp"
 
@@ -23,7 +29,6 @@ namespace owdin {
     class owdinnetwork : public contract {
         private:
             using contract::contract;
-
 
             owdin_filesystem fs_controller;
             owdin_network    net_controller;
@@ -61,9 +66,24 @@ namespace owdin {
             typedef multi_index<N(accounts), account> accounts;
             typedef multi_index<N(stat), currency> stats;
 
+            typedef multi_index<N(pool), pool> poolIndex;
+            typedef multi_index<N(pricing), pricing> pricingIndex;
+
+            typedef multi_index<N(stake), stake> stakeIndex;
+            typedef multi_index<N(amount), amount> amountIndex;
+            typedef multi_index<N(total), total> totalIndex;
+
             void auth( account_name account );
             void sub_balance( account_name owner, asset value );
             void add_balance( account_name owner, asset value, account_name ram_payer );
+            void add_total_volume( uint8_t resource, uint64_t volume, uint64_t u_volume );
+
+            uint64_t get_cap( uint8_t resource, asset quantity );
+            uint64_t get_resource( uint8_t resource );
+            void add_total_staking( uint8_t resource, uint64_t staking );
+            void addstake( account_name from, account_name to, uint8_t resource, uint64_t staking, asset balance );
+            void addamount( account_name account, uint8_t resource, uint64_t staking, asset balance );
+            void subamount( account_name account, uint8_t resource, asset balance, uint64_t staking );
 
         public:
             //@abi action
@@ -95,6 +115,14 @@ namespace owdin {
 
             //@abi action
             void logging( account_name account, uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused, uint16_t statuscode, string status, string message );
+
+            //@abi action
+            void regpool( account_name account, uint8_t resource, uint64_t volume );
+            //@abi action
+            void staking( account_name from, account_name to, uint8_t resource, asset quantity );
+            //@abi action
+            void unstaking( account_name from, account_name to, uint64_t key, uint8_t resource );
+            //@abi action
+            void price( uint8_t resource, asset price );
     };
 }
-
