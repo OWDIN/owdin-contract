@@ -4,9 +4,9 @@
 
 ## about
 ---
- > the users can share their OWDIN-PORT resources such as storage, computing power, and network bandwidth
- > the user participates in the network as a portion of the virtual data center
- > OWDIN-PORT's config data and status log are stored in the EOS blockchain
+ * the users can share their OWDIN-PORT resources such as storage, computing power, and network bandwidth
+ * the user participates in the network as a portion of the virtual data center
+ * OWDIN-PORT's config data and status log are stored in the EOS blockchain
 
 ## action
 ---
