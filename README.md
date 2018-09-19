@@ -1,15 +1,12 @@
 # OWDIN-PORT EOS Smart Contract
----
 [![OWDIN NETWORK](doc/OWDINLOGO.png "OWDIN NETWORK")](https://owdin.network/)
 
-## about
----
+## About
  * the users can share their OWDIN-PORT resources such as storage, computing power, and network bandwidth
  * the user participates in the network as a portion of the virtual data center
  * OWDIN-PORT's config data and status log are stored in the EOS blockchain
 
-## action
----
+## Action
 | action      | auth               | Description                        |
 |:------------|:-------------------|:-----------------------------------|
 | `create`    | `contract account` | create owdin token                 |
@@ -32,7 +29,7 @@
 | `staking`   | `eos account`      | staking resource                   |
 | `unstaking` | `eos account`      | unstaking resource                 |
 
-## example action using cleos
+## Example action using cleos
 ---
 ### debug
 ```bash
@@ -131,4 +128,5 @@ cleos push action serviceaccount price '[0, "10.0000 TOKEN"]' -p serviceaccount@
 
 ## License
 ---
-[LICENSE](LICENSE)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
