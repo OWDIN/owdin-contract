@@ -2,35 +2,35 @@
 [![OWDIN NETWORK](doc/OWDINLOGO.png "OWDIN NETWORK")](https://owdin.network/)
 
 ## About
- * the users can share their OWDIN-PORT resources such as storage, computing power, and network bandwidth
- * the user participates in the network as a portion of the virtual data center
- * OWDIN-PORT's config data and status log are stored in the EOS blockchain
+* Share OWDIN-PORT resources such as storage, computing power, and network bandwidth
+* Participates in the network as a portion of the virtual data center
+* OWDIN-PORT's config data and status log are stored in the EOS blockchain
 
 ## Action
 | action      | auth               | Description                        |
 |:------------|:-------------------|:-----------------------------------|
-| `create`    | `contract account` | create owdin token                 |
-| `issue`     | `contract account` | issue owdin token                  |
-| `reward`    | `contract account` | reward token to user               |
-| `burn`      | `contract account` | owdin token burn                   |
-| `set`       | `contract account` | set owdin port device              |
-| `remove`    | `contract account` | remove user account data           |
-| `initial`   | `contract account` | initialize user account data       |
-| `clear`     | `contract account` | clear user account data            |
-| `price`     | `contract account` | set resource price                 |
-| `debug`     | `eos account`      | test action                        |
-| `transfer`  | `eos account`      | transfer owdin token               |
-| `signup`    | `eos account`      | signup owdinnetwork                |
-| `reset`     | `eos account`      | reset user data                    |
-| `activate`  | `eos account`      | activate/deactivate user account   |
-| `update`    | `eos account`      | user data update                   |
-| `logging`   | `eos account`      | device status logging              |
-| `regpool`   | `eos account`      | register resource pool user device |
-| `staking`   | `eos account`      | staking resource                   |
-| `unstaking` | `eos account`      | unstaking resource                 |
+| `burn`      | `Contract Account` | OWDIN token burn                   |
+| `clear`     | `Contract Account` | Clear user account data            |
+| `create`    | `Contract Account` | Create OWDIN token                 |
+| `initial`   | `Contract Account` | Initialize user account data       |
+| `issue`     | `Contract Account` | Issue OWDIN token                  |
+| `price`     | `Contract Account` | Set resource price                 |
+| `remove`    | `Contract Account` | Remove user account data           |
+| `reward`    | `Contract Account` | Reward token to user               |
+| `set`       | `Contract Account` | Set OWDIN port device              |
+| `activate`  | `EOS Account`      | Activate/Deactivate user account   |
+| `debug`     | `EOS Account`      | Test action                        |
+| `logging`   | `EOS Account`      | Device status logging              |
+| `regpool`   | `EOS Account`      | Register resource pool user device |
+| `reset`     | `EOS Account`      | Reset user data                    |
+| `signup`    | `EOS Account`      | Sign up OWDIN Network              |
+| `staking`   | `EOS Account`      | Staking resource                   |
+| `transfer`  | `EOS Account`      | Transfer OWDIN token               |
+| `unstaking` | `EOS Account`      | Unstaking resource                 |
+| `update`    | `EOS Account`      | User data update                   |
 
 ## Example action using cleos
----
+
 ### debug
 ```bash
 cleos push action serviceaccount debug '["serviceaccount"]' -p user_account@active
@@ -127,6 +127,5 @@ cleos push action serviceaccount price '[0, "10.0000 TOKEN"]' -p serviceaccount@
 ```
 
 ## License
----
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
