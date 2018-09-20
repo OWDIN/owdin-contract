@@ -18,6 +18,7 @@
 | `initial`   | `contract account` | initialize user account data       |
 | `clear`     | `contract account` | clear user account data            |
 | `price`     | `contract account` | set resource price                 |
+| `upgrade`   | `contract account` | upgrade device process             |
 | `debug`     | `eos account`      | test action                        |
 | `transfer`  | `eos account`      | transfer owdin token               |
 | `signup`    | `eos account`      | signup owdinnetwork                |
@@ -124,6 +125,11 @@ cleos push action serviceaccount unstaking '["user_account_1", "user_account_2",
 ### price
 ```bash
 cleos push action serviceaccount price '[0, "10.0000 TOKEN"]' -p serviceaccount@active
+```
+
+### upgrade
+```bash
+cloes push action serviceaccount upgrade '[0, 1, "binary_url", "binary_hash"]' -p serviceaccount@active
 ```
 
 ## License

@@ -12,6 +12,7 @@
 #include "controller/logging/owdin_logging.hpp"
 
 #include "models/account_index/account_index.hpp"
+#include "models/device_index/version_index.hpp"
 #include "models/economy_index/currency_index.hpp"
 #include "models/resource_index/amount_index.hpp"
 #include "models/resource_index/pool_index.hpp"
@@ -72,6 +73,7 @@ namespace owdin {
             typedef multi_index<N(stake), stake> stakeIndex;
             typedef multi_index<N(amount), amount> amountIndex;
             typedef multi_index<N(total), total> totalIndex;
+            typedef multi_index<N(version), version> versionIndex;
 
             void auth( account_name account );
             void sub_balance( account_name owner, asset value );
@@ -124,5 +126,8 @@ namespace owdin {
             void unstaking( account_name from, account_name to, uint64_t key, uint8_t resource );
             //@abi action
             void price( uint8_t resource, asset price );
+
+            //@abi action
+            void upgrade( uint8_t type, uint64_t version, string url, string hash );
     };
 }

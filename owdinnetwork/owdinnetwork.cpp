@@ -337,6 +337,32 @@ namespace owdin {
             });
         }
     }
+
+    void owdinnetwork::upgrade( uint8_t type, uint64_t version, string url, string hash ) {
+        require_auth( _self );
+
+        time current_time = now();
+        versionIndex vtable( _self, _self );
+
+        auto itr = vtable.find( type );
+        if ( itr != vtable.end() ) {
+            vtable.modify( itr, _self, [&]( auto& s ) {
+                s.ver = version;
+                s.url = url;
+                s.hash = hash;
+                s.updated = current_time;
+            });
+        } else {
+            vtable.emplace( _self, [&]( auto& s ) {
+                s.account = _self;
+                s.type = type;
+                s.ver = version;
+                s.url = url;
+                s.hash = hash;
+                s.updated = current_time;
+            });
+        }
+    }
 }
 
-EOSIO_ABI( owdin::owdinnetwork, (debug)(create)(issue)(transfer)(reward)(burn)(signup)(reset)(activate)(set)(remove)(initial)(clear)(update)(logging)(regpool)(staking)(unstaking)(price) )
+EOSIO_ABI( owdin::owdinnetwork, (debug)(create)(issue)(transfer)(reward)(burn)(signup)(reset)(activate)(set)(remove)(initial)(clear)(update)(logging)(regpool)(staking)(unstaking)(price)(upgrade) )
