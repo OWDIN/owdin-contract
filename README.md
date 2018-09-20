@@ -9,28 +9,6 @@
 ## Action
 | action      | auth               | Description                        |
 |:------------|:-------------------|:-----------------------------------|
-<<<<<<< HEAD
-| `create`    | `contract account` | create owdin token                 |
-| `issue`     | `contract account` | issue owdin token                  |
-| `reward`    | `contract account` | reward token to user               |
-| `burn`      | `contract account` | owdin token burn                   |
-| `set`       | `contract account` | set owdin port device              |
-| `remove`    | `contract account` | remove user account data           |
-| `initial`   | `contract account` | initialize user account data       |
-| `clear`     | `contract account` | clear user account data            |
-| `price`     | `contract account` | set resource price                 |
-| `upgrade`   | `contract account` | upgrade device process             |
-| `debug`     | `eos account`      | test action                        |
-| `transfer`  | `eos account`      | transfer owdin token               |
-| `signup`    | `eos account`      | signup owdinnetwork                |
-| `reset`     | `eos account`      | reset user data                    |
-| `activate`  | `eos account`      | activate/deactivate user account   |
-| `update`    | `eos account`      | user data update                   |
-| `logging`   | `eos account`      | device status logging              |
-| `regpool`   | `eos account`      | register resource pool user device |
-| `staking`   | `eos account`      | staking resource                   |
-| `unstaking` | `eos account`      | unstaking resource                 |
-=======
 | `burn`      | `Contract Account` | OWDIN token burn                   |
 | `clear`     | `Contract Account` | Clear user account data            |
 | `create`    | `Contract Account` | Create OWDIN token                 |
@@ -40,6 +18,7 @@
 | `remove`    | `Contract Account` | Remove user account data           |
 | `reward`    | `Contract Account` | Reward token to user               |
 | `set`       | `Contract Account` | Set OWDIN port device              |
+| `upgrade`   | `Contract Account` | Upgrade OWDIN port process         |
 | `activate`  | `EOS Account`      | Activate/Deactivate user account   |
 | `debug`     | `EOS Account`      | Test action                        |
 | `logging`   | `EOS Account`      | Device status logging              |
@@ -50,7 +29,6 @@
 | `transfer`  | `EOS Account`      | Transfer OWDIN token               |
 | `unstaking` | `EOS Account`      | Unstaking resource                 |
 | `update`    | `EOS Account`      | User data update                   |
->>>>>>> 0c3b5eb28bd7a13c8b238f3a68cc9887572ec89c
 
 ## Example action using cleos
 
