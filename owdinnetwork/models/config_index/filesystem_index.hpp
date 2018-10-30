@@ -23,6 +23,6 @@ namespace owdin {
 
         EOSLIB_SERIALIZE( filesystem, (account)(receiver)(status)(playbook)(memo)(created)(updated)(create_block)(update_block) )
     };
-    
+
     typedef multi_index<N(filesystem), filesystem> filesystemIndex;
 }
