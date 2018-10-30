@@ -20,7 +20,7 @@ namespace owdin {
         uint64_t     update_block; // update block number
 
         uint64_t primary_key() const { return account; }
-        
+
         EOSLIB_SERIALIZE(network, (account)(receiver)(status)(playbook)(memo)(created)(updated)(create_block)(update_block) )
     };
 

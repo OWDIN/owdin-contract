@@ -95,7 +95,7 @@ namespace owdin {
          * reward token
          */
         eosio_assert( _self != account, "cannot reward to contract account" );
-        
+
         require_auth( _self );
 
         eosio_assert( is_account( account ), "to account does not exist");
@@ -200,6 +200,8 @@ namespace owdin {
             proc_controller.set( account, playbook, memo );
         } else if (object_type == OBJECT_PROCESS ) {
             sys_controller.set( account, playbook, memo );
+        } else if (object_type == OBJECT_SECURITY ) {
+            security_controller.set( account, playbook, memo );
         } else {
             eosio_assert( false, "object type error" );
         }
@@ -222,6 +224,8 @@ namespace owdin {
             proc_controller.remove( account, memo );
         } else if (object_type == OBJECT_PROCESS ) {
             sys_controller.remove( account, memo );
+        } else if (object_type == OBJECT_SECURITY ) {
+            security_controller.remove( account, memo );
         } else {
             eosio_assert( false, "object type error" );
         }
@@ -243,6 +247,8 @@ namespace owdin {
             proc_controller.initial( account, memo );
         } else if (object_type == OBJECT_PROCESS ) {
             sys_controller.initial( account, memo );
+        } else if (object_type == OBJECT_SECURITY ) {
+            security_controller.initial( account, memo );
         } else {
             eosio_assert( false, "object type error" );
         }
@@ -264,6 +270,8 @@ namespace owdin {
             proc_controller.clear( account, memo );
         } else if (object_type == OBJECT_PROCESS ) {
             sys_controller.clear( account, memo );
+        } else if (object_type == OBJECT_SECURITY ) {
+            security_controller.clear( account, memo );
         } else {
             eosio_assert( false, "object type error" );
         }
@@ -286,6 +294,8 @@ namespace owdin {
             proc_controller.update( account, stat, memo );
         } else if (object_type == OBJECT_PROCESS ) {
             sys_controller.update( account, stat, memo );
+        } else if (object_type == OBJECT_SECURITY ) {
+            security_controller.update( account, stat, memo );
         } else {
             eosio_assert( false, "object type error" );
         }

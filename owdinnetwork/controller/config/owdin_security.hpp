@@ -1,23 +1,23 @@
 #pragma once
 
-#include "models/config_index/process_index.hpp"
+#include "models/config_index/security_index.hpp"
 
 using namespace std;
 using namespace eosio;
 
 namespace owdin {
-    class owdin_process {
+    class owdin_security {
         private:
             account_name self;
 
         public:
-            owdin_process( account_name _self ): self( _self ) { };
+            owdin_security( account_name _self ): self( _self ) { };
 
             void set( account_name account, string playbook, string memo ) {
                 time current_time = now();
                 uint64_t block_num = tapos_block_num();
 
-                processIndex owdin_config( self, account );
+                secconfIndex owdin_config( self, account );
 
                 auto itr = owdin_config.find( account );
                 eosio_assert( itr != owdin_config.end(), "can not found account" );
@@ -35,7 +35,7 @@ namespace owdin {
                 time current_time = now();
                 uint64_t block_num = tapos_block_num();
 
-                processIndex owdin_config( self, account );
+                secconfIndex owdin_config( self, account );
 
                 auto itr = owdin_config.find( account );
                 eosio_assert( itr != owdin_config.end(), "can not found account" );
@@ -54,7 +54,7 @@ namespace owdin {
                 time current_time = now();
                 uint64_t block_num = tapos_block_num();
 
-                processIndex owdin_config( self, account );
+                secconfIndex owdin_config( self, account );
 
                 auto itr = owdin_config.find( account );
                 eosio_assert( itr != owdin_config.end(), "can not found account" );
@@ -66,14 +66,14 @@ namespace owdin {
                 time current_time = now();
                 uint64_t block_num = tapos_block_num();
 
-                processIndex owdin_config( self, account );
+                secconfIndex owdin_config( self, account );
 
                 owdin_config.emplace( self, [&]( auto& s ) {
                     s.account = account;
                     s.receiver = self;
                     s.status = "";
                     s.playbook = "";
-                    s.memo = "INIT_PROCESS_CONFIG";
+                    s.memo = "INIT_SECURITY_CONFIG";
                     s.created = current_time;
                     s.updated = current_time;
                     s.create_block = block_num;
@@ -85,7 +85,7 @@ namespace owdin {
                 time current_time = now();
                 uint64_t block_num = tapos_block_num();
 
-                processIndex owdin_config( self, account );
+                secconfIndex owdin_config( self, account );
 
                 auto itr = owdin_config.find( account );
                 eosio_assert( itr != owdin_config.end(), "can not found account" );

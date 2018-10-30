@@ -4,10 +4,11 @@ using namespace std;
 using namespace eosio;
 
 namespace owdin {
-    //@abi table filesystem i64
-    struct filesystem {
+    //@abi table securityconf i64
+    struct securityconf {
         /*
-        * filesystem config data
+        * security config data
+        * (kernel config & security config)
         */
         account_name account;      // account name
         account_name receiver;     // receive user account name
@@ -21,8 +22,9 @@ namespace owdin {
 
         uint64_t primary_key() const { return account; }
 
-        EOSLIB_SERIALIZE( filesystem, (account)(receiver)(status)(playbook)(memo)(created)(updated)(create_block)(update_block) )
+        EOSLIB_SERIALIZE(securityconf, (account)(receiver)(status)(playbook)(memo)(created)(updated)(create_block)(update_block) )
     };
 
-    typedef multi_index<N(filesystem), filesystem> filesystemIndex;
+    typedef multi_index<N(securityconf), securityconf> secconfIndex;
 }
+

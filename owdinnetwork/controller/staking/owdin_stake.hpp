@@ -28,7 +28,7 @@ namespace owdin {
          * staking resource
          */
         require_auth( from );
-        
+
         auto sym = quantity.symbol.name();
         stats statstable( _self, sym );
         const auto& st = statstable.get( sym );
@@ -38,26 +38,18 @@ namespace owdin {
 
         eosio_assert( owner->balance >= quantity, "quantity exceeds available supply" );
         eosio_assert( quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
-        
+
         uint64_t cap = get_cap( resource, quantity );
         uint64_t rsrc = get_resource( resource );
         eosio_assert( cap < rsrc, "not enough resource" );
 
-        // stake에 기록 추가
         addstake( from, to, resource, cap, quantity );
-
-        // amount에 스테이킹 수량 더하기
         addamount( to, resource, cap, quantity );
-
-        // total에 스테이킹된 수량 더하기
         add_total_staking( resource, cap );
-
-        // token 빼기
         sub_balance( from, quantity );
     }
 
     void owdinnetwork::addstake( account_name from, account_name to, uint8_t resource, uint64_t staking, asset balance ) {
-        // 히스토리 형식으로 남기기
         time current_time = now();
 
         stakeIndex stake( _self, to );
@@ -74,7 +66,6 @@ namespace owdin {
     }
 
     void owdinnetwork::addamount( account_name account, uint8_t resource, uint64_t staking, asset balance ) {
-        // 기존 인덱스에 더하기
         amountIndex amount( _self, account );
         auto itr = amount.find( resource );
 

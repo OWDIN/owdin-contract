@@ -135,6 +135,38 @@
         }
       ]
     },{
+      "name": "securityconf",
+      "base": "",
+      "fields": [{
+          "name": "account",
+          "type": "name"
+        },{
+          "name": "receiver",
+          "type": "name"
+        },{
+          "name": "status",
+          "type": "string"
+        },{
+          "name": "playbook",
+          "type": "string"
+        },{
+          "name": "memo",
+          "type": "string"
+        },{
+          "name": "created",
+          "type": "time"
+        },{
+          "name": "updated",
+          "type": "time"
+        },{
+          "name": "create_block",
+          "type": "uint64"
+        },{
+          "name": "update_block",
+          "type": "uint64"
+        }
+      ]
+    },{
       "name": "device",
       "base": "",
       "fields": [{
@@ -822,6 +854,16 @@
         "name"
       ],
       "type": "sysconf"
+    },{
+      "name": "securityconf",
+      "index_type": "i64",
+      "key_names": [
+        "account"
+      ],
+      "key_types": [
+        "name"
+      ],
+      "type": "securityconf"
     },{
       "name": "device",
       "index_type": "i64",
