@@ -8,6 +8,7 @@
 #include "controller/config/owdin_network.hpp"
 #include "controller/config/owdin_process.hpp"
 #include "controller/config/owdin_system.hpp"
+#include "controller/config/owdin_security.hpp"
 #include "controller/device/owdin_device.hpp"
 #include "controller/logging/owdin_logging.hpp"
 
@@ -35,6 +36,7 @@ namespace owdin {
             owdin_network    net_controller;
             owdin_process    proc_controller;
             owdin_system     sys_controller;
+            owdin_security   security_controller;
             owdin_logging    logging_controller;
             owdin_device     device_controller;
         public:
@@ -43,6 +45,7 @@ namespace owdin {
             , net_controller( _self )
             , proc_controller( _self )
             , sys_controller( _self )
+            , security_controller( _self )
             , logging_controller( _self )
             , device_controller( _self ) { };
 

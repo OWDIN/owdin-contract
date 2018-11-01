@@ -55,7 +55,7 @@ namespace owdin {
                 uint64_t block_num = tapos_block_num();
 
                 networkIndex owdin_config( self, account );
-                
+
                 auto itr = owdin_config.find( account );
                 eosio_assert( itr != owdin_config.end(), "can not found account" );
 
@@ -65,9 +65,9 @@ namespace owdin {
             void initial( account_name account, string memo ) {
                 time current_time = now();
                 uint64_t block_num = tapos_block_num();
-                
+
                 networkIndex owdin_config( self, account );
-                
+
                 owdin_config.emplace( self, [&]( auto& s ) {
                     s.account = account;
                     s.receiver = self;
