@@ -79,27 +79,27 @@ cleos push action serviceaccount activate '["user_account", false]' -p user_acco
 
 ### set
 ```bash
-cleos push action serviceaccount set '["user_account", "config_data", 0, "Config Setting Test"]' -p serviceaccount@active
+cleos push action serviceaccount set '["user_account", "config_data", 0]' -p serviceaccount@active
 ```
 
 ### remove
 ```bash
-cleos push action serviceaccount remove '["user_account", 0, "Remove Test"]' -p serviceaccount@active
+cleos push action serviceaccount remove '["user_account", 0]' -p serviceaccount@active
 ```
 
 ### initial
 ```bash
-cleos push action serviceaccount initial '["user_account", 0, "Initial Test"]' -p serviceaccount@active
+cleos push action serviceaccount initial '["user_account", 0]' -p serviceaccount@active
 ```
 
 ### clear
 ```bash
-cleos push action serviceaccount clear '["user_account", 0, "Clear Test"]' -p serviceaccount@active
+cleos push action serviceaccount clear '["user_account", 0]' -p serviceaccount@active
 ```
 
 ### update
 ```bash
-cleos push action serviceaccount update '["user_account", 0, "Update Status", "Update Test"]' -p user_account@active
+cleos push action serviceaccount update '["user_account", 0, "Update Status"]' -p user_account@active
 ```
 
 ### logging
