@@ -4,11 +4,7 @@
 #include <eosiolib/eosio.hpp>
 #include <eosiolib/transaction.hpp>
 
-#include "controller/config/owdin_filesystem.hpp"
-#include "controller/config/owdin_network.hpp"
-#include "controller/config/owdin_process.hpp"
-#include "controller/config/owdin_system.hpp"
-#include "controller/config/owdin_security.hpp"
+#include "controller/config/owdin_config.hpp"
 #include "controller/device/owdin_device.hpp"
 #include "controller/logging/owdin_logging.hpp"
 
@@ -32,20 +28,12 @@ namespace owdin {
         private:
             using contract::contract;
 
-            owdin_filesystem fs_controller;
-            owdin_network    net_controller;
-            owdin_process    proc_controller;
-            owdin_system     sys_controller;
-            owdin_security   security_controller;
-            owdin_logging    logging_controller;
-            owdin_device     device_controller;
+            owdin_config  config_controller;
+            owdin_logging logging_controller;
+            owdin_device  device_controller;
         public:
             owdinnetwork( account_name self ) : contract( self )
-            , fs_controller( _self )
-            , net_controller( _self )
-            , proc_controller( _self )
-            , sys_controller( _self )
-            , security_controller( _self )
+            , config_controller( _self )
             , logging_controller( _self )
             , device_controller( _self ) { };
 
@@ -108,15 +96,15 @@ namespace owdin {
             }
 
             //@abi action
-            void set( account_name account, string playbook, uint8_t object_type, string memo );
+            void set( account_name account, string playbook, string playhash, uint8_t object_type );
             //@abi action
-            void remove( account_name account, uint8_t object_type, string memo );
+            void remove( account_name account, uint8_t object_type );
             //@abi action
-            void initial( account_name account, uint8_t object_type, string memo );
+            void initial( account_name account, uint8_t object_type );
             //@abi action
-            void clear( account_name account, uint8_t object_type, string memo );
+            void clear( account_name account, uint8_t object_type );
             //@abi action
-            void update( account_name account, uint8_t object_type, string stat, string memo );
+            void update( account_name account, uint8_t object_type, string stat );
 
             //@abi action
             void logging( account_name account, uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused, uint16_t statuscode, string status, string message );
