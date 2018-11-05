@@ -15,6 +15,3 @@ namespace owdin {
         EOSLIB_SERIALIZE( total, (t_resource)(t_amount)(t_staking)(t_volume) )
     };
 }
-
-// 현재 쓸수 있는 자원의 총량
-// 서버 관점

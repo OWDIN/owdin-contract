@@ -4,9 +4,6 @@
 
 namespace owdin {
     void owdinnetwork::regpool( account_name account, uint8_t resource, uint64_t volume ) {
-        /*
-         * register resource pool & update
-         */
         require_auth( account );
 
         time current_time = now();

@@ -14,5 +14,3 @@ namespace owdin {
         EOSLIB_SERIALIZE( pool, (account)(shared)(updated) )
     };
 }
-
-// 자원을 내놓은 유저 리스트

@@ -24,9 +24,6 @@ namespace owdin {
     }
 
     void owdinnetwork::staking( account_name from, account_name to, uint8_t resource, asset quantity ) {
-        /*
-         * staking resource
-         */
         require_auth( from );
 
         auto sym = quantity.symbol.name();

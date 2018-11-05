@@ -15,5 +15,3 @@ namespace owdin {
         EOSLIB_SERIALIZE( pricing, (resource)(price)(updated) )
     };
 }
-
-// 기준 가격과 가격당 자원 사이즈
