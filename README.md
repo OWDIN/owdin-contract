@@ -44,7 +44,7 @@ cleos push action serviceaccount create '["1000000000.0000 TOKEN"]' -p serviceac
 
 ### issue
 ```bash
-cleos push action serviceaccount issue '["1000000000.0000 OWDDIN", "INITIAL TOKEN ISSUE"]' -p serviceaccount@active
+cleos push action serviceaccount issue '["1000000000.0000 TOKEN", "INITIAL TOKEN ISSUE"]' -p serviceaccount@active
 ```
 
 ### transfer
@@ -54,7 +54,7 @@ cleos push action serviceaccount transfer '["user_account_1", "user_account_2", 
 
 ### reward
 ```bash
-cleos push action serviceaccount reward '["user_account", "10.0000 ODN", "TOKEN Reward Test"]' -p serviceaccount@active
+cleos push action serviceaccount reward '["user_account", "10.0000 TOKEN", "TOKEN Reward Test"]' -p serviceaccount@active
 ```
 
 ### burn
@@ -64,7 +64,7 @@ cleos push action serviceaccount burn '["serviceaccount", "100.0000 TOKEN", "TOK
 
 ### signup
 ```bash
-cleos push action serviceaccount signup '["user_account", "user_account", "user_public_key_1", "device_unique_index_1", "secure_ip_index_1", 10240, 409600, 1024000, 0, 0 ]' -p user_account@active
+cleos push action serviceaccount signup '["user_account", "user_public_key_1", "device_unique_index_1", "secure_ip_index_1", 10240, 409600, 1024000, 0, 0 ]' -p user_account@active
 ```
 
 ### reset
