@@ -1,5 +1,5 @@
 # OWDIN-PORT EOS Smart Contract
-[![OWDIN NETWORK](doc/OWDINLOGO.png "OWDIN NETWORK")](https://owdin.network/)
+[![OWDIN NETWORK](docs/img/banner-owdin.png "OWDIN NETWORK")](https://owdin.network/)
 
 ## About
 * Share OWDIN-PORT resources such as storage, computing power, and network bandwidth
