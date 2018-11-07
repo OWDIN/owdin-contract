@@ -22,7 +22,7 @@ namespace owdin {
 
         uint64_t primary_key() const { return account; }
 
-        EOSLIB_SERIALIZE( device, (account)(uidx)(pubkey)(idx)(bandwidth)(memory)(disk)(networktype)(usertype)(isactive)(created)(updated)(create_block)(update_block) )
+        EOSLIB_SERIALIZE( device, (account)(uidx)(pubkey)(idx)(bandwidth)(cpu)(memory)(disk)(networktype)(usertype)(isactive)(created)(updated) )
     };
 
     typedef multi_index<N(device), device> deviceIndex;
