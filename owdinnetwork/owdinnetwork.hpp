@@ -80,14 +80,14 @@ namespace owdin {
 
         public:
             //@abi action
-            void signup( account_name account, string pubkey, string uidx, string idx, uint64_t bandwidth, uint64_t memory, uint64_t disk, uint8_t networktype, uint8_t usertype ) {
+            void signup( account_name account, string pubkey, string uidx, string idx, uint64_t bandwidth, uint64_t memory, uint64_t cpu, uint64_t disk, uint8_t networktype, uint8_t usertype ) {
                 require_auth( account );
-                device_controller.signup( account, pubkey, uidx, idx, bandwidth, memory, disk, networktype, usertype );
+                device_controller.signup( account, pubkey, uidx, idx, bandwidth, cpu, memory, disk, networktype, usertype );
             }
             //@abi action
-            void reset( account_name account, string pubkey, string uidx, string idx, uint64_t bandwidth, uint64_t memory, uint64_t disk, uint8_t networktype, uint8_t usertype ) {
+            void reset( account_name account, string pubkey, string uidx, string idx, uint64_t bandwidth, uint64_t memory, uint64_t cpu, uint64_t disk, uint8_t networktype, uint8_t usertype ) {
                 require_auth( account );
-                device_controller.reset_account( account, pubkey, uidx, idx, bandwidth, memory, disk, networktype, usertype );
+                device_controller.reset_account( account, pubkey, uidx, idx, bandwidth, cpu, memory, disk, networktype, usertype );
             }
             //@abi action
             void activate( account_name account, bool isactive ) {

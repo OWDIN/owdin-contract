@@ -11,6 +11,7 @@ namespace owdin {
         string       pubkey;       // user public key ( encrypt owdin public key )
         string       idx;          // unique user index ( encrypt public ip address )
         uint64_t     bandwidth;    // network bandwidth ( user select data )
+        uint64_t     cpu;          // device cpu speed
         uint64_t     memory;       // device memory size
         uint64_t     disk;         // device disk size
         uint8_t      networktype;  // device network type ( NAT or Public )
@@ -18,8 +19,6 @@ namespace owdin {
         bool         isactive;     // activated user
         time         created;      // create time
         time         updated;      // update time
-        uint64_t     create_block; // create block number
-        uint64_t     update_block; // update block number
 
         uint64_t primary_key() const { return account; }
 
