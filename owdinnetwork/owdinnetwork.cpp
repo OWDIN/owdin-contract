@@ -195,11 +195,11 @@ namespace owdin {
     void owdinnetwork::logging( account_name account, uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused, uint16_t statuscode, string status, string message ) {
         require_auth( account );
 
-        eosio_assert( cpu > 0, "cpu must be positive" );
-        eosio_assert( memory > 0, "memory must be positive" );
-        eosio_assert( disk > 0, "disk must be positive" );
-        eosio_assert( bandwidth > 0, "bandwidth must be positive" );
-        eosio_assert( fsused > 0, "fsused must be positive" );
+        eosio_assert( cpu > -1, "cpu must be positive" );
+        eosio_assert( memory > -1, "memory must be positive" );
+        eosio_assert( disk > -1, "disk must be positive" );
+        eosio_assert( bandwidth > -1, "bandwidth must be positive" );
+        eosio_assert( fsused > -1, "fsused must be positive" );
         eosio_assert( disk > fsused, "file system used size has more than disk size" );
         eosio_assert( status.size() <= 256, "status has more than 256 bytes" );
         eosio_assert( message.size() <= 256, "message has more than 256 bytes" );

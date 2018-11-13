@@ -5,6 +5,7 @@
 .vscode/
 
 # enviroment 
+initial.sh
 log/*
 testcase/*
 enviroments
