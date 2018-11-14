@@ -173,7 +173,7 @@ namespace owdin {
 
     void owdinnetwork::remove( account_name account ) {
         require_auth( _self );
-        config_controller.remove( account, object_type );
+        config_controller.remove( account );
     }
 
     void owdinnetwork::initial( account_name account ) {
