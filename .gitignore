@@ -5,9 +5,11 @@
 .vscode/
 
 # enviroment 
+initial.sh
 log/*
 testcase/*
 enviroments
+doc/Constellation.md
 
 # compiled file
 owdinnetwork/owdinnetwork.wasm
