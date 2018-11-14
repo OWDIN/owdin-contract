@@ -61,7 +61,7 @@ namespace owdin {
                 }
             }
 
-            void remove( account_name account, uint8_t object_type ) {
+            void remove( account_name account ) {
                 configsIndex configs( self, account );
 
                 auto itr = configs.find( account );
@@ -70,7 +70,7 @@ namespace owdin {
                 configs.erase( itr );
             }
 
-            void initial( account_name account, uint8_t object_type ) {
+            void initial( account_name account ) {
                 time current_time = now();
                 configsIndex configs( self, account );
                 string data = "";

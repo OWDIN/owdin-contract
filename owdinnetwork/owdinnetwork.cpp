@@ -171,14 +171,14 @@ namespace owdin {
         config_controller.set( account, playbook, playhash, object_type );
     }
 
-    void owdinnetwork::remove( account_name account, uint8_t object_type ) {
+    void owdinnetwork::remove( account_name account ) {
         require_auth( _self );
         config_controller.remove( account, object_type );
     }
 
-    void owdinnetwork::initial( account_name account, uint8_t object_type ) {
-        require_auth( _self );
-        config_controller.initial( account, object_type );
+    void owdinnetwork::initial( account_name account ) {
+        require_auth( account );
+        config_controller.initial( account );
     }
 
     void owdinnetwork::clear( account_name account, uint8_t object_type ) {
