@@ -12,13 +12,13 @@
 | `burn`      | `Contract Account` | OWDIN token burn                   |
 | `clear`     | `Contract Account` | Clear user account data            |
 | `create`    | `Contract Account` | Create OWDIN token                 |
-| `initial`   | `Contract Account` | Initialize user account data       |
 | `issue`     | `Contract Account` | Issue OWDIN token                  |
 | `price`     | `Contract Account` | Set resource price                 |
 | `remove`    | `Contract Account` | Remove user account data           |
 | `reward`    | `Contract Account` | Reward token to user               |
 | `set`       | `Contract Account` | Set OWDIN port device              |
 | `upgrade`   | `Contract Account` | Upgrade OWDIN port process         |
+| `initial`   | `EOS Account`      | Initialize user account data       |
 | `activate`  | `EOS Account`      | Activate/Deactivate user account   |
 | `debug`     | `EOS Account`      | Test action                        |
 | `logging`   | `EOS Account`      | Device status logging              |
@@ -84,12 +84,12 @@ cleos push action serviceaccount set '["user_account", "config_data", 0]' -p ser
 
 ### remove
 ```bash
-cleos push action serviceaccount remove '["user_account", 0]' -p serviceaccount@active
+cleos push action serviceaccount remove '["user_account"]' -p serviceaccount@active
 ```
 
 ### initial
 ```bash
-cleos push action serviceaccount initial '["user_account", 0]' -p serviceaccount@active
+cleos push action serviceaccount initial '["user_account"]' -p user_account@active
 ```
 
 ### clear
@@ -129,7 +129,7 @@ cleos push action serviceaccount price '[0, "10.0000 TOKEN"]' -p serviceaccount@
 
 ### upgrade
 ```bash
-cloes push action serviceaccount upgrade '[0, 1, "binary_url", "binary_hash"]' -p serviceaccount@active
+cleos push action serviceaccount upgrade '[0, 1, "binary_url", "binary_hash"]' -p serviceaccount@active
 ```
 
 ## License
