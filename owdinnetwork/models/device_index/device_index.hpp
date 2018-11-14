@@ -10,10 +10,10 @@ namespace owdin {
         string       uidx;         // unique device number
         string       pubkey;       // user public key ( encrypt owdin public key )
         string       idx;          // unique user index ( encrypt public ip address )
-        uint64_t     bandwidth;    // network bandwidth ( user select data )
-        uint64_t     cpu;          // device cpu speed
-        uint64_t     memory;       // device memory size
-        uint64_t     disk;         // device disk size
+        uint128_t    bandwidth;    // network bandwidth ( user select data )
+        uint128_t    cpu;          // device cpu speed
+        uint128_t    memory;       // device memory size
+        uint128_t    disk;         // device disk size
         uint8_t      networktype;  // device network type ( NAT or Public )
         uint8_t      usertype;     // user type ( public user or enterprise user )
         bool         isactive;     // activated user

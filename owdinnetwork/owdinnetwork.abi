@@ -108,16 +108,16 @@
           "type": "string"
         },{
           "name": "bandwidth",
-          "type": "uint64"
+          "type": "uint128"
         },{
           "name": "cpu",
-          "type": "uint64"
+          "type": "uint128"
         },{
           "name": "memory",
-          "type": "uint64"
+          "type": "uint128"
         },{
           "name": "disk",
-          "type": "uint64"
+          "type": "uint128"
         },{
           "name": "networktype",
           "type": "uint8"
@@ -137,6 +137,44 @@
       ]
     },{
       "name": "usaged",
+      "base": "",
+      "fields": [{
+          "name": "account",
+          "type": "name"
+        },{
+          "name": "cpu",
+          "type": "uint64"
+        },{
+          "name": "memory",
+          "type": "uint64"
+        },{
+          "name": "disk",
+          "type": "uint64"
+        },{
+          "name": "bandwidth",
+          "type": "uint64"
+        },{
+          "name": "fsused",
+          "type": "uint64"
+        },{
+          "name": "statuscode",
+          "type": "uint16"
+        },{
+          "name": "status",
+          "type": "string"
+        },{
+          "name": "message",
+          "type": "string"
+        },{
+          "name": "created",
+          "type": "time"
+        },{
+          "name": "updated",
+          "type": "time"
+        }
+      ]
+    },{
+      "name": "log",
       "base": "",
       "fields": [{
           "name": "key",
@@ -171,15 +209,6 @@
         },{
           "name": "created",
           "type": "time"
-        },{
-          "name": "updated",
-          "type": "time"
-        },{
-          "name": "create_block",
-          "type": "uint64"
-        },{
-          "name": "update_block",
-          "type": "uint64"
         }
       ]
     },{
@@ -748,12 +777,22 @@
       "name": "usaged",
       "index_type": "i64",
       "key_names": [
+        "account"
+      ],
+      "key_types": [
+        "name"
+      ],
+      "type": "usaged"
+    },{
+      "name": "log",
+      "index_type": "i64",
+      "key_names": [
         "key"
       ],
       "key_types": [
         "uint64"
       ],
-      "type": "usaged"
+      "type": "log"
     },{
       "name": "accounts",
       "index_type": "i64",

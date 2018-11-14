@@ -15,12 +15,40 @@ namespace owdin {
 
             void logging( account_name account, uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused, uint16_t statuscode, string status, string message ) {
                 time current_time = now();
-                uint64_t block_num = tapos_block_num();
-                
-                usagedIndex uix( self, account );
 
-                uix.emplace( self, [&]( auto& s ) {
-                    s.key = uix.available_primary_key();
+                usagedIndex uix( self, account );
+                auto itr = uix.find( account );
+                if (itr != uix.end()) {
+                    uix.modify( itr, self, [&]( auto& s ) {
+                        s.cpu = cpu;
+                        s.memory = memory;
+                        s.disk = disk;
+                        s.bandwidth = bandwidth;
+                        s.fsused = fsused;
+                        s.statuscode = statuscode;
+                        s.status = status;
+                        s.message = message;
+                        s.updated = current_time;
+                    });
+                } else {
+                    uix.emplace( self, [&]( auto& s ) {
+                        s.account = account;
+                        s.cpu = cpu;
+                        s.memory = memory;
+                        s.disk = disk;
+                        s.bandwidth = bandwidth;
+                        s.fsused = fsused;
+                        s.statuscode = statuscode;
+                        s.status = status;
+                        s.message = message;
+                        s.created = current_time;
+                        s.updated = current_time;
+                    });
+                }
+
+                logIndex lix( self, account );
+                lix.emplace( self, [&]( auto& s ) {
+                    s.key = lix.available_primary_key();
                     s.account = account;
                     s.cpu = cpu;
                     s.memory = memory;
@@ -31,10 +59,8 @@ namespace owdin {
                     s.status = status;
                     s.message = message;
                     s.created = current_time;
-                    s.updated = current_time;
-                    s.create_block = block_num;
-                    s.update_block = block_num;
                 });
             }
     };
 }
+
