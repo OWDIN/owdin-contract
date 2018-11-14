@@ -13,14 +13,54 @@ namespace owdin {
         public:
             owdin_logging( account_name _self ): self( _self ) { };
 
-            void logging( account_name account, uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused, uint16_t statuscode, string status, string message ) {
+            int64_t logging( account_name account, uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused, uint16_t statuscode, string status, string message ) {
                 time current_time = now();
-                uint64_t block_num = tapos_block_num();
-                
-                usagedIndex uix( self, account );
+                int64_t balance;
 
-                uix.emplace( self, [&]( auto& s ) {
-                    s.key = uix.available_primary_key();
+                usagedIndex uix( self, account );
+                auto itr = uix.find( account );
+                if (itr != uix.end()) {
+                    uix.modify( itr, self, [&]( auto& s ) {
+                        s.cpu = cpu;
+                        s.memory = memory;
+                        s.disk = disk;
+                        s.bandwidth = bandwidth;
+                        s.fsused = fsused;
+                        s.statuscode = statuscode;
+                        s.status = status;
+                        s.message = message;
+                        s.updated = current_time;
+                    });
+                    
+                    balance = reward_balance( cpu,
+                                        memory,
+                                        disk - itr->disk,
+                                        bandwidth - itr->bandwidth,
+                                        fsused - itr->fsused );
+                } else {
+                    uix.emplace( self, [&]( auto& s ) {
+                        s.account = account;
+                        s.cpu = cpu;
+                        s.memory = memory;
+                        s.disk = disk;
+                        s.bandwidth = bandwidth;
+                        s.fsused = fsused;
+                        s.statuscode = statuscode;
+                        s.status = status;
+                        s.message = message;
+                        s.created = current_time;
+                        s.updated = current_time;
+                    });
+                    balance = reward_balance( cpu,
+                                    memory,
+                                    disk,
+                                    bandwidth,
+                                    fsused );
+                }
+
+                logIndex lix( self, account );
+                lix.emplace( self, [&]( auto& s ) {
+                    s.key = lix.available_primary_key();
                     s.account = account;
                     s.cpu = cpu;
                     s.memory = memory;
@@ -31,10 +71,36 @@ namespace owdin {
                     s.status = status;
                     s.message = message;
                     s.created = current_time;
-                    s.updated = current_time;
-                    s.create_block = block_num;
-                    s.update_block = block_num;
                 });
+
+                return balance;
+            }
+
+            int64_t reward_balance( uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused ) {
+                const int64_t cpu_factor = 1;
+                const int64_t memory_factor = 1;
+                const int64_t disk_factor = 1;
+                const int64_t bandwidth_factor = 1;
+                const int64_t fsused_factor = 1;
+                int64_t val = 0;
+
+                cpu = _factor(cpu, cpu_factor);
+                memory = _factor(memory, memory_factor);
+                disk = _factor(disk, disk_factor);
+                bandwidth = _factor(bandwidth, bandwidth_factor);
+                fsused = _factor(fsused, fsused_factor);
+
+                return (cpu + memory + disk + bandwidth + fsused);
+            }
+
+        private:
+            int64_t _factor(uint64_t val, int64_t fac) {
+                val = val * fac;
+                if (val < 1) {
+                    return 0;
+                }
+                return val;
             }
     };
 }
+

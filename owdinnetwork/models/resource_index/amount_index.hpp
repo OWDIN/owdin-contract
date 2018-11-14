@@ -16,6 +16,3 @@ namespace owdin {
         EOSLIB_SERIALIZE( amount, (account)(resource)(staking)(balance)(updated) )
     };
 }
-
-// 계정당 스테이킹의 총량
-// 사용자 관점

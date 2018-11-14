@@ -26,7 +26,7 @@ del_wasm:
 del_abi:
 	rm -f $(TARGET).abi
 
-clear: del_log del_wasm
+clear: del_log del_wasm del_abi
 
 deploy:
 	$(CLEOS) $(SOURCE) $(SOURCE)/ 

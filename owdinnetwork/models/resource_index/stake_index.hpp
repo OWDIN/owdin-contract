@@ -18,4 +18,3 @@ namespace owdin {
         EOSLIB_SERIALIZE( stake, (key)(from)(to)(resource)(balance)(volume)(created) )
     };
 }
-// 스테이킹한 히스토리 (리스트)

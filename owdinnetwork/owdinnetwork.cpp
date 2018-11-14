@@ -5,18 +5,12 @@
 #include "controller/staking/owdin_unstake.hpp"
 
 namespace owdin {
-    void owdinnetwork::debug( account_name account ) {
-        /*
-         * test action
-         */
-        const char* ver_info = "v0.0.2";
+    void owdinnetwork::debug( account_name account) {
+        const char* ver_info = "v0.0.3";
         print( "[ ", ver_info, " - ", name{_self}, " ] : ", name{account} );
     }
 
     void owdinnetwork::create( asset maximum_supply ) {
-        /*
-         * create token
-         */
         require_auth( _self );
         require_recipient( _self );
 
@@ -37,9 +31,6 @@ namespace owdin {
     }
 
     void owdinnetwork::issue( asset quantity, string memo ) {
-        /*
-         * issue token
-         */
         require_auth( _self );
         require_recipient( _self );
 
@@ -67,9 +58,6 @@ namespace owdin {
     }
 
     void owdinnetwork::transfer( account_name from, account_name to, asset quantity, string memo ) {
-        /*
-         * transfer token
-         */
         eosio_assert( from != to, "cannot transfer to self" );
         require_auth( from );
 
@@ -91,9 +79,6 @@ namespace owdin {
     }
 
     void owdinnetwork::reward( account_name account, asset quantity, string memo ) {
-        /*
-         * reward token
-         */
         eosio_assert( _self != account, "cannot reward to contract account" );
 
         require_auth( _self );
@@ -112,9 +97,6 @@ namespace owdin {
     }
 
     void owdinnetwork::burn( account_name account, asset quantity, string memo ) {
-        /*
-         * token burn
-         */
         require_auth( _self );
 
         auto sym = quantity.symbol;
@@ -182,147 +164,49 @@ namespace owdin {
         return ac.balance;
     }
 
-
-
-    void owdinnetwork::set( account_name account, string playbook, uint8_t object_type, string memo ) {
-        /*
-         * config setting
-         */
+    void owdinnetwork::set( account_name account, string playbook, string playhash, uint8_t object_type ) {
         require_auth( _self );
-
-        eosio_assert( memo.size() <= 256, "memo has more than 256 bytes" );
-
-        if (object_type == OBJECT_STORAGE ) {
-            fs_controller.set( account, playbook, memo );
-        } else if (object_type == OBJECT_NETWORK ) {
-            net_controller.set( account, playbook, memo );
-        } else if (object_type == OBJECT_SYSTEM ) {
-            proc_controller.set( account, playbook, memo );
-        } else if (object_type == OBJECT_PROCESS ) {
-            sys_controller.set( account, playbook, memo );
-        } else if (object_type == OBJECT_SECURITY ) {
-            security_controller.set( account, playbook, memo );
-        } else {
-            eosio_assert( false, "object type error" );
-        }
-
+        config_controller.set( account, playbook, playhash, object_type );
     }
 
-    void owdinnetwork::remove( account_name account, uint8_t object_type, string memo ) {
-        /*
-         * config remove (erase)
-         */
+    void owdinnetwork::remove( account_name account ) {
         require_auth( _self );
-
-        eosio_assert( memo.size() <= 256, "memo has more than 256 bytes" );
-
-        if (object_type == OBJECT_STORAGE ) {
-            fs_controller.remove( account, memo );
-        } else if (object_type == OBJECT_NETWORK ) {
-            net_controller.remove( account, memo );
-        } else if (object_type == OBJECT_SYSTEM ) {
-            proc_controller.remove( account, memo );
-        } else if (object_type == OBJECT_PROCESS ) {
-            sys_controller.remove( account, memo );
-        } else if (object_type == OBJECT_SECURITY ) {
-            security_controller.remove( account, memo );
-        } else {
-            eosio_assert( false, "object type error" );
-        }
+        config_controller.remove( account );
     }
 
-    void owdinnetwork::initial( account_name account, uint8_t object_type, string memo ) {
-        /*
-         * config initialize
-         */
-        require_auth( _self );
-
-        eosio_assert( memo.size() <= 256, "memo has more than 256 bytes" );
-
-        if (object_type == OBJECT_STORAGE ) {
-            fs_controller.initial( account, memo );
-        } else if (object_type == OBJECT_NETWORK ) {
-            net_controller.initial( account, memo );
-        } else if (object_type == OBJECT_SYSTEM ) {
-            proc_controller.initial( account, memo );
-        } else if (object_type == OBJECT_PROCESS ) {
-            sys_controller.initial( account, memo );
-        } else if (object_type == OBJECT_SECURITY ) {
-            security_controller.initial( account, memo );
-        } else {
-            eosio_assert( false, "object type error" );
-        }
-    }
-
-    void owdinnetwork::clear( account_name account, uint8_t object_type, string memo ) {
-        /*
-         * config clear
-         */
-        require_auth( _self );
-
-        eosio_assert( memo.size() <= 256, "memo has more than 256 bytes" );
-
-        if (object_type == OBJECT_STORAGE ) {
-            fs_controller.clear( account, memo );
-        } else if (object_type == OBJECT_NETWORK ) {
-            net_controller.clear( account, memo );
-        } else if (object_type == OBJECT_SYSTEM ) {
-            proc_controller.clear( account, memo );
-        } else if (object_type == OBJECT_PROCESS ) {
-            sys_controller.clear( account, memo );
-        } else if (object_type == OBJECT_SECURITY ) {
-            security_controller.clear( account, memo );
-        } else {
-            eosio_assert( false, "object type error" );
-        }
-    }
-
-    void owdinnetwork::update( account_name account, uint8_t object_type, string stat, string memo ) {
-        /*
-         * config apply result update
-         */
+    void owdinnetwork::initial( account_name account ) {
         require_auth( account );
+        config_controller.initial( account );
+    }
 
+    void owdinnetwork::clear( account_name account, uint8_t object_type ) {
+        require_auth( _self );
+        config_controller.clear( account, object_type );
+    }
+
+    void owdinnetwork::update( account_name account, uint8_t object_type, string stat ) {
+        require_auth( account );
         eosio_assert( stat.size() <= 256, "status has more than 256 bytes" );
-        eosio_assert( memo.size() <= 256, "message has more than 256 bytes" );
-
-        if (object_type == OBJECT_STORAGE ) {
-            fs_controller.update( account, stat, memo );
-        } else if (object_type == OBJECT_NETWORK ) {
-            net_controller.update( account, stat, memo );
-        } else if (object_type == OBJECT_SYSTEM ) {
-            proc_controller.update( account, stat, memo );
-        } else if (object_type == OBJECT_PROCESS ) {
-            sys_controller.update( account, stat, memo );
-        } else if (object_type == OBJECT_SECURITY ) {
-            security_controller.update( account, stat, memo );
-        } else {
-            eosio_assert( false, "object type error" );
-        }
+        config_controller.update( account, stat, object_type );
     }
 
     void owdinnetwork::logging( account_name account, uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused, uint16_t statuscode, string status, string message ) {
-        /*
-         * device usage logging
-         */
+        int64_t balance;
+        
         require_auth( account );
-
-        eosio_assert( cpu > 0, "cpu must be positive" );
-        eosio_assert( memory > 0, "memory must be positive" );
-        eosio_assert( disk > 0, "disk must be positive" );
-        eosio_assert( bandwidth > 0, "bandwidth must be positive" );
-        eosio_assert( fsused > 0, "fsused must be positive" );
-        eosio_assert( disk > fsused, "file system used size has more than disk size" );
         eosio_assert( status.size() <= 256, "status has more than 256 bytes" );
         eosio_assert( message.size() <= 256, "message has more than 256 bytes" );
 
-        logging_controller.logging( account, cpu, memory, disk, bandwidth, fsused, statuscode, status, message );
+        balance = logging_controller.logging( account, cpu, memory, disk, bandwidth, fsused, statuscode, status, message );
+
+        asset currency;
+        currency.amount = balance;
+        currency.symbol = string_to_symbol(5, "OWDIN");
+
+        add_balance( account, currency, _self );
     }
 
     void owdinnetwork::price( uint8_t resource, asset price ) {
-        /*
-         * set resource price
-         */
         require_auth( _self );
 
         auto sym = price.symbol.name();
