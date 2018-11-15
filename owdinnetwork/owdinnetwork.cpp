@@ -5,7 +5,7 @@
 #include "controller/staking/owdin_unstake.hpp"
 
 namespace owdin {
-    void owdinnetwork::debug( account_name account) {
+    void owdinnetwork::debug( account_name account ) {
         const char* ver_info = "v0.0.3";
         print( "[ ", ver_info, " - ", name{_self}, " ] : ", name{account} );
     }
@@ -192,18 +192,34 @@ namespace owdin {
 
     void owdinnetwork::logging( account_name account, uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused, uint16_t statuscode, string status, string message ) {
         int64_t balance;
-        
         require_auth( account );
         eosio_assert( status.size() <= 256, "status has more than 256 bytes" );
         eosio_assert( message.size() <= 256, "message has more than 256 bytes" );
 
         balance = logging_controller.logging( account, cpu, memory, disk, bandwidth, fsused, statuscode, status, message );
+        system_reward( account, balance );
+    }
 
-        asset currency;
-        currency.amount = balance;
-        currency.symbol = string_to_symbol(5, "OWDIN");
+    void owdinnetwork::system_reward( account_name account, int64_t balance ) {
+        asset quantity;
+        quantity.amount = balance;
+        quantity.symbol = string_to_symbol(4, "OWDIN");
 
-        add_balance( account, currency, _self );
+        auto sym_name = quantity.symbol.name();
+        stats statstable( _self, sym_name );
+        auto existing = statstable.find( sym_name );
+        eosio_assert( existing != statstable.end(), "token with symbol does not exist, create token before issue" );
+        const auto& st = *existing;
+
+        eosio_assert( quantity.is_valid(), "invalid quantity" );
+        eosio_assert( quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
+        eosio_assert( quantity.amount <= st.max_supply.amount - st.supply.amount, "quantity exceeds available supply");
+
+        statstable.modify( st, 0, [&]( auto& s ) {
+            s.supply += quantity;
+        });
+        
+        add_balance( account, quantity, account );
     }
 
     void owdinnetwork::price( uint8_t resource, asset price ) {

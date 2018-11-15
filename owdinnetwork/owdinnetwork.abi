@@ -174,7 +174,7 @@
         }
       ]
     },{
-      "name": "log",
+      "name": "logs",
       "base": "",
       "fields": [{
           "name": "key",
@@ -200,6 +200,9 @@
         },{
           "name": "statuscode",
           "type": "uint16"
+        },{
+          "name": "balance",
+          "type": "int64"
         },{
           "name": "status",
           "type": "string"
@@ -784,7 +787,7 @@
       ],
       "type": "usaged"
     },{
-      "name": "log",
+      "name": "logs",
       "index_type": "i64",
       "key_names": [
         "key"
@@ -792,7 +795,7 @@
       "key_types": [
         "uint64"
       ],
-      "type": "log"
+      "type": "logs"
     },{
       "name": "accounts",
       "index_type": "i64",

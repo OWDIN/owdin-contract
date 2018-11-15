@@ -58,7 +58,7 @@ namespace owdin {
                                     fsused );
                 }
 
-                logIndex lix( self, account );
+                logsIndex lix( self, account );
                 lix.emplace( self, [&]( auto& s ) {
                     s.key = lix.available_primary_key();
                     s.account = account;
@@ -70,6 +70,7 @@ namespace owdin {
                     s.statuscode = statuscode;
                     s.status = status;
                     s.message = message;
+                    s.balance = balance;
                     s.created = current_time;
                 });
 

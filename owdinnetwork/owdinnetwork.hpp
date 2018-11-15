@@ -70,6 +70,7 @@ namespace owdin {
             void sub_balance( account_name owner, asset value );
             void add_balance( account_name owner, asset value, account_name ram_payer );
             void add_total_volume( uint8_t resource, uint64_t volume, uint64_t u_volume );
+            void system_reward( account_name account, int64_t balance );
 
             uint64_t get_cap( uint8_t resource, asset quantity );
             uint64_t get_resource( uint8_t resource );
