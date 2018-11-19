@@ -193,6 +193,12 @@ namespace owdin {
     void owdinnetwork::logging( account_name account, uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused, uint16_t statuscode, string status, string message ) {
         int64_t balance;
         require_auth( account );
+
+        deviceIndex dix( _self, account );
+        auto itr = dix.find( account );
+        eosio_assert( itr != dix.end(), "can not found account" );
+        eosio_assert( itr->memory > memory, "too large memory used size" );
+
         eosio_assert( status.size() <= 256, "status has more than 256 bytes" );
         eosio_assert( message.size() <= 256, "message has more than 256 bytes" );
 
