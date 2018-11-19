@@ -6,7 +6,7 @@
 
 namespace owdin {
     void owdinnetwork::debug( account_name account ) {
-        const char* ver_info = "v0.0.3";
+        const char* ver_info = "v0.0.4";
         print( "[ ", ver_info, " - ", name{_self}, " ] : ", name{account} );
     }
 
