@@ -100,7 +100,7 @@ namespace owdin {
                 if (val < 1) {
                     return 0;
                 }
-                return val / 100;
+                return val / 10000;
             }
     };
 }
