@@ -72,12 +72,9 @@ namespace owdin {
 
             void initial( account_name account ) {
                 time current_time = now();
-                configsIndex configs( self, account );
                 string data = "";
-                auto itr = configs.find( account );
-                eosio_assert( itr != configs.end(), "can not found account" );
-
-                configs.modify( itr, self, [&]( auto& s ) {
+                configsIndex configs( self, account );
+                configs.emplace( self, [&]( auto& s ) {
                     s.ipfs_receiver = account;
                     s.proc_receiver = self;
                     s.sys_receiver = self;
