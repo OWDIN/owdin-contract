@@ -75,6 +75,7 @@ namespace owdin {
                 string data = "";
                 configsIndex configs( self, account );
                 configs.emplace( self, [&]( auto& s ) {
+                    s.owner = account;
                     s.ipfs_receiver = account;
                     s.proc_receiver = self;
                     s.sys_receiver = self;
