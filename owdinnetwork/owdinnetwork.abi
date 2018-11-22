@@ -507,7 +507,7 @@
         }
       ]
     },{
-      "name": "set",
+      "name": "settings",
       "base": "",
       "fields": [{
           "name": "account",
@@ -711,8 +711,8 @@
       "type": "activate",
       "ricardian_contract": ""
     },{
-      "name": "set",
-      "type": "set",
+      "name": "settings",
+      "type": "settings",
       "ricardian_contract": ""
     },{
       "name": "remove",

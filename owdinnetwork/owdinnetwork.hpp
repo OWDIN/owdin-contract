@@ -97,7 +97,7 @@ namespace owdin {
             }
 
             //@abi action
-            void set( account_name account, string playbook, string playhash, uint8_t object_type );
+            void settings( account_name account, string playbook, string playhash, uint8_t object_type );
             //@abi action
             void remove( account_name account );
             //@abi action

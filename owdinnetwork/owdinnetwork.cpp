@@ -164,7 +164,7 @@ namespace owdin {
         return ac.balance;
     }
 
-    void owdinnetwork::set( account_name account, string playbook, string playhash, uint8_t object_type ) {
+    void owdinnetwork::settings( account_name account, string playbook, string playhash, uint8_t object_type ) {
         require_auth( _self );
         config_controller.set( account, playbook, playhash, object_type );
     }
@@ -281,4 +281,4 @@ namespace owdin {
     }
 }
 
-EOSIO_ABI( owdin::owdinnetwork, (debug)(create)(issue)(transfer)(reward)(burn)(signup)(reset)(activate)(set)(remove)(initial)(clear)(update)(logging)(regpool)(staking)(unstaking)(price)(upgrade) )
+EOSIO_ABI( owdin::owdinnetwork, (debug)(create)(issue)(transfer)(reward)(burn)(signup)(reset)(activate)(settings)(remove)(initial)(clear)(update)(logging)(regpool)(staking)(unstaking)(price)(upgrade) )
