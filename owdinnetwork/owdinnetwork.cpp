@@ -1,70 +1,60 @@
 #include "owdinnetwork.hpp"
 
-#include "controller/staking/owdin_stake.hpp"
-#include "controller/staking/owdin_regpool.hpp"
-#include "controller/staking/owdin_unstake.hpp"
-
 namespace owdin {
-    void owdinnetwork::debug( account_name account ) {
-        const char* ver_info = "v0.0.4";
-        print( "[ ", ver_info, " - ", name{_self}, " ] : ", name{account} );
+    ACTION owdinnetwork::debug( name account ) {
+        const char* ver_info = "v0.1.1";
+        print( "[ ", ver_info, " - ", name{_self}, " ] : ", name{account}, "" );
     }
 
-    void owdinnetwork::create( asset maximum_supply ) {
+    ACTION owdinnetwork::create( asset maximum_supply ) {
         require_auth( _self );
         require_recipient( _self );
 
-        auto sym = maximum_supply.symbol;
-        eosio_assert( sym.is_valid(), "invalid symbol name" );
-        eosio_assert( maximum_supply.is_valid(), "invalid supply");
+        auto symbol_name = maximum_supply.symbol.code().raw();
+        currency_index currency_table( _self, symbol_name );
+        auto existing_currency = currency_table.find( symbol_name );
+
+        eosio_assert( existing_currency == currency_table.end(), "token with symbol already exists" );
         eosio_assert( maximum_supply.amount > 0, "max-supply must be positive");
 
-        stats statstable( _self, sym.name() );
-        auto existing = statstable.find( sym.name() );
-        eosio_assert( existing == statstable.end(), "token with symbol already exists" );
-
-        statstable.emplace( _self, [&]( auto& s ) {
-            s.supply.symbol   = maximum_supply.symbol;
-            s.max_supply      = maximum_supply;
-            s.issuer          = _self;
+        asset supply(0, symbol( symbol_code( symbol_name ), 4) );
+        
+        currency_table.emplace( _self, [&]( auto& currency ) {
+            currency.supply = supply;
+            currency.max_supply = maximum_supply;
+            currency.issuer = _self;
         });
     }
 
-    void owdinnetwork::issue( asset quantity, string memo ) {
-        require_auth( _self );
-        require_recipient( _self );
-
-        auto sym = quantity.symbol;
-        eosio_assert( sym.is_valid(), "invalid symbol name" );
+    ACTION owdinnetwork::issue( asset quantity, string memo ) {
+        auto symbol = quantity.symbol;
+        eosio_assert( symbol.is_valid(), "invalid symbol name" );
         eosio_assert( memo.size() <= 256, "memo has more than 256 bytes" );
 
-        auto sym_name = sym.name();
-        stats statstable( _self, sym_name );
-        auto existing = statstable.find( sym_name );
-        eosio_assert( existing != statstable.end(), "token with symbol does not exist, create token before issue" );
-        const auto& st = *existing;
+        auto symbol_name = symbol.code().raw();
+        currency_index currency_table( _self, symbol_name );
+        auto existing_currency = currency_table.find( symbol_name );
+        eosio_assert( existing_currency != currency_table.end(), "token with symbol does not exist. create token before issue" );
+        const auto& st = *existing_currency;
 
+        require_auth( st.issuer );
         eosio_assert( quantity.is_valid(), "invalid quantity" );
         eosio_assert( quantity.amount > 0, "must issue positive quantity" );
+        eosio_assert( quantity.amount <= st.max_supply.amount, "quantity exceeds available supply" );
+        eosio_assert( symbol == st.supply.symbol, "symbol precision mismatch" );
 
-        eosio_assert( quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
-        eosio_assert( quantity.amount <= st.max_supply.amount - st.supply.amount, "quantity exceeds available supply");
-
-        statstable.modify( st, 0, [&]( auto& s ) {
-            s.supply += quantity;
-        });
-
-        add_balance( st.issuer, quantity, st.issuer );
+        add_supply( quantity );
+        add_balance( _self, quantity, st.issuer );
     }
 
-    void owdinnetwork::transfer( account_name from, account_name to, asset quantity, string memo ) {
-        eosio_assert( from != to, "cannot transfer to self" );
+    ACTION owdinnetwork::transfer( name from, name to, asset quantity, string memo ) {
+        eosio_assert( from != to, "cannot transfer to _self" );
         require_auth( from );
 
         eosio_assert( is_account( to ), "to account does not exist");
-        auto sym = quantity.symbol.name();
-        stats statstable( _self, sym );
-        const auto& st = statstable.get( sym );
+        auto sym = quantity.symbol.code().raw();
+        currency_index currency_table( _self, sym );
+        const auto& st = currency_table.get( sym );
 
         require_recipient( from );
         require_recipient( to );
@@ -73,40 +63,22 @@ namespace owdin {
         eosio_assert( quantity.amount > 0, "must transfer positive quantity" );
         eosio_assert( quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
         eosio_assert( memo.size() <= 256, "memo has more than 256 bytes" );
-
+    
         sub_balance( from, quantity );
         add_balance( to, quantity, from );
     }
 
-    void owdinnetwork::reward( account_name account, asset quantity, string memo ) {
-        eosio_assert( _self != account, "cannot reward to contract account" );
-
-        require_auth( _self );
-
-        eosio_assert( is_account( account ), "to account does not exist");
-        auto sym = quantity.symbol.name();
-        stats statstable( _self, sym );
-        const auto& st = statstable.get( sym );
-
-        eosio_assert( quantity.is_valid(), "invalid quantity" );
-        eosio_assert( quantity.amount > 0, "must transfer positive quantity" );
-        eosio_assert( quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
-        eosio_assert( memo.size() <= 256, "memo has more than 256 bytes" );
-
-        add_balance( account, quantity, account );
-    }
-
-    void owdinnetwork::burn( account_name account, asset quantity, string memo ) {
+    ACTION owdinnetwork::burn( name account, asset quantity, string memo ) {
         require_auth( _self );
 
         auto sym = quantity.symbol;
         eosio_assert( sym.is_valid(), "invalid symbol name" );
         eosio_assert( memo.size() <= 256, "memo has more than 256 bytes" );
 
-        auto sym_name = sym.name();
-        stats statstable( _self, sym_name );
-        auto existing = statstable.find( sym_name );
-        eosio_assert( existing != statstable.end(), "token with symbol does not exist, create token before burn" );
+        auto sym_name = sym.code().raw();
+        currency_index currency_table( _self, sym_name );
+        auto existing = currency_table.find( sym_name );
+        eosio_assert( existing != currency_table.end(), "token with symbol does not exist, create token before burn" );
         const auto& st = *existing;
 
         eosio_assert( quantity.is_valid(), "invalid quantity" );
@@ -115,170 +87,259 @@ namespace owdin {
         eosio_assert( quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
         eosio_assert( quantity.amount <= st.supply.amount, "quantity exceeds available supply");
 
-        statstable.modify( st, 0, [&]( auto& s ) {
-            s.supply -= quantity;
-        });
-
+        sub_supply( quantity );
         sub_balance( account, quantity );
     }
 
-    void owdinnetwork::sub_balance( account_name owner, asset value ) {
-        accounts from_account( _self, owner );
-
-        const auto& from = from_account.get( value.symbol.name(), "no balance object found" );
+    void owdinnetwork::sub_balance( name owner, asset value ) {
+        account_index from_acnts( _self, owner.value );
+        const auto& from = from_acnts.get( value.symbol.code().raw(), "no balance object found" );
         eosio_assert( from.balance.amount >= value.amount, "overdrawn balance" );
 
-
         if( from.balance.amount == value.amount ) {
-            from_account.erase( from );
+            from_acnts.erase( from );
         } else {
-            from_account.modify( from, owner, [&]( auto& a ) {
+            from_acnts.modify( from, owner, [&]( auto& a ) {
                 a.balance -= value;
             });
         }
     }
 
-    void owdinnetwork::add_balance( account_name owner, asset value, account_name ram_payer ) {
-        accounts to_account( _self, owner );
-        auto to = to_account.find( value.symbol.name() );
-        if( to == to_account.end() ) {
-            to_account.emplace( ram_payer, [&]( auto& a ){
+    void owdinnetwork::add_balance( name owner, asset value, name ram_payer ) {
+        account_index to_accounts( _self, owner.value );
+        auto to = to_accounts.find( value.symbol.code().raw() );
+        if( to == to_accounts.end() ) {
+            to_accounts.emplace( ram_payer, [&]( auto& a ){
                 a.balance = value;
             });
         } else {
-            to_account.modify( to, 0, [&]( auto& a ) {
+            to_accounts.modify( to, _self, [&]( auto& a ) {
                 a.balance += value;
             });
         }
     }
 
-    asset owdinnetwork::get_supply( symbol_name sym ) const {
-        stats statstable( _self, sym );
-        const auto& st = statstable.get( sym );
-        return st.supply;
-    }
+    void owdinnetwork::sub_supply( asset quantity ) {
+        auto symbol_name = quantity.symbol.code().raw();
+        currency_index currency_table( _self, symbol_name );
+        auto current_currency = currency_table.find( symbol_name );
 
-    asset owdinnetwork::get_balance( account_name owner, symbol_name sym ) const {
-        accounts accountstable( _self, owner );
-        const auto& ac = accountstable.get( sym );
-        return ac.balance;
-    }
-
-    void owdinnetwork::settings( account_name account, string playbook, string playhash, uint8_t object_type ) {
-        require_auth( _self );
-        config_controller.set( account, playbook, playhash, object_type );
-    }
-
-    void owdinnetwork::remove( account_name account ) {
-        require_auth( _self );
-        config_controller.remove( account );
-    }
-
-    void owdinnetwork::initial( account_name account ) {
-        require_auth( account );
-        config_controller.initial( account );
-    }
-
-    void owdinnetwork::clear( account_name account, uint8_t object_type ) {
-        require_auth( _self );
-        config_controller.clear( account, object_type );
-    }
-
-    void owdinnetwork::update( account_name account, uint8_t object_type, string stat ) {
-        require_auth( account );
-        eosio_assert( stat.size() <= 256, "status has more than 256 bytes" );
-        config_controller.update( account, stat, object_type );
-    }
-
-    void owdinnetwork::logging( account_name account, uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused, uint16_t statuscode, string status, string message ) {
-        int64_t balance;
-        require_auth( account );
-
-        deviceIndex dix( _self, account );
-        auto itr = dix.find( account );
-        eosio_assert( itr != dix.end(), "can not found account" );
-        eosio_assert( itr->memory > memory, "too large memory used size" );
-
-        eosio_assert( status.size() <= 256, "status has more than 256 bytes" );
-        eosio_assert( message.size() <= 256, "message has more than 256 bytes" );
-
-        balance = logging_controller.logging( account, cpu, memory, disk, bandwidth, fsused, statuscode, status, message );
-        system_reward( account, balance );
-    }
-
-    void owdinnetwork::system_reward( account_name account, int64_t balance ) {
-        asset quantity;
-        quantity.amount = balance;
-        quantity.symbol = string_to_symbol(4, "OWDIN");
-
-        auto sym_name = quantity.symbol.name();
-        stats statstable( _self, sym_name );
-        auto existing = statstable.find( sym_name );
-        eosio_assert( existing != statstable.end(), "token with symbol does not exist, create token before issue" );
-        const auto& st = *existing;
-
-        eosio_assert( quantity.is_valid(), "invalid quantity" );
-        eosio_assert( quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
-        eosio_assert( quantity.amount <= st.max_supply.amount - st.supply.amount, "quantity exceeds available supply");
-
-        statstable.modify( st, 0, [&]( auto& s ) {
-            s.supply += quantity;
+        currency_table.modify( current_currency, _self, [&]( auto& currency ) {
+            currency.supply -= quantity;
         });
+    }
+
+    void owdinnetwork::add_supply( asset quantity ) {
+        auto symbol_name = quantity.symbol.code().raw();
+        currency_index currency_table( _self, symbol_name );
+        auto current_currency = currency_table.find( symbol_name );
+
+        currency_table.modify( current_currency, name(0), [&]( auto& currency ) {
+            currency.supply += quantity;
+        });
+    }
+
+    ACTION owdinnetwork::signup( name account, string pubkey, string uidx, string idx, uint128_t bandwidth, uint128_t memory, uint128_t cpu, uint128_t disk, uint128_t netype, uint8_t usertype ) {
+        require_auth( account );
         
-        add_balance( account, quantity, account );
-    }
+        uint64_t blocktime = publication_time();
 
-    void owdinnetwork::price( uint8_t resource, asset price ) {
-        require_auth( _self );
-
-        auto sym = price.symbol.name();
-        stats statstable( _self, sym );
-        const auto& st = statstable.get( sym );
-        eosio_assert( price.symbol == st.supply.symbol, "symbol precision mismatch" );
-
-        time current_time = now();
-        pricingIndex pricetable( _self, _self );
-
-        auto itr = pricetable.find( resource );
-        if ( itr != pricetable.end() ) {
-            pricetable.modify( itr, _self, [&]( auto& s ) {
-                s.price = price;
-                s.updated = current_time;
-            });
-        } else {
-            pricetable.emplace( _self, [&]( auto& s ) {
-                s.resource = resource;
-                s.price = price;
-                s.updated = current_time;
+        users_index user( _self, account.value);
+        auto itr = user.find(account.value);
+        if ( itr == user.end() ) {
+            user.emplace( _self, [&]( auto& u ) {
+                u.account = account;
+                u.isactive = true;
+                u.created = blocktime;
+                u.updated = blocktime;
             });
         }
+
+        user.modify( itr, _self, [&]( auto& u ) {
+            u.account = account;
+            u.isactive = true;
+            u.created = blocktime;
+            u.updated = blocktime;
+
+            if (u.spec.size() < 1) {
+                specific spec;
+                spec.uidx = uidx;
+                spec.pubkey = pubkey;
+                spec.idx = idx;
+                spec.bandwidth = bandwidth;
+                spec.cpu = cpu;
+                spec.memory = memory;
+                spec.disk = disk;
+                spec.netype = netype;
+                spec.usertype = usertype;
+                spec.created = blocktime;
+                spec.updated = blocktime;
+
+                u.spec.push_back(spec);
+            } else {
+                u.spec[0].uidx = uidx;
+                u.spec[0].pubkey = pubkey;
+                u.spec[0].idx = idx;
+                u.spec[0].bandwidth = bandwidth;
+                u.spec[0].cpu = cpu;
+                u.spec[0].memory = memory;
+                u.spec[0].disk = disk;
+                u.spec[0].netype = netype;
+                u.spec[0].usertype = usertype;
+                u.spec[0].updated = blocktime;
+            }
+        });
     }
 
-    void owdinnetwork::upgrade( uint8_t type, uint64_t version, string url, string hash ) {
+    ACTION owdinnetwork::set( name account, string playbook, string playhash ) {
         require_auth( _self );
 
-        time current_time = now();
-        versionIndex vtable( _self, _self );
+        uint64_t blocktime = publication_time();
+                
+        users_index user( _self, account.value);
+        auto itr = user.find(account.value);
+        eosio_assert( itr != user.end(), "failed find user, signup first" );
 
-        auto itr = vtable.find( type );
-        if ( itr != vtable.end() ) {
-            vtable.modify( itr, _self, [&]( auto& s ) {
-                s.ver = version;
-                s.url = url;
-                s.hash = hash;
-                s.updated = current_time;
-            });
-        } else {
-            vtable.emplace( _self, [&]( auto& s ) {
-                s.account = _self;
-                s.type = type;
-                s.ver = version;
-                s.url = url;
-                s.hash = hash;
-                s.updated = current_time;
-            });
+        
+        
+        user.modify( itr, _self, [&]( auto& u ) {
+            if (u.configs.size() < 1) {
+                config cfg;
+                cfg.receiver = account;
+                cfg.conf = playbook;
+                cfg.hash = playhash;
+                cfg.updated = blocktime;
+
+                u.configs.push_back(cfg);
+            } else {
+                u.configs[0].receiver = account;
+                u.configs[0].conf = playbook;
+                u.configs[0].hash = playhash;
+                u.configs[0].updated = blocktime;
+            }
+        });
+    }
+
+    ACTION owdinnetwork::check( name account, string stat ) {
+        require_auth( account );
+        
+        uint64_t blocktime = publication_time();
+
+        users_index user( _self, account.value);
+        auto itr = user.find(account.value);
+        eosio_assert( itr != user.end(), "failed find user, signup first" );
+
+
+        
+        user.modify( itr, _self, [&]( auto& u ) {
+            if (u.configs.size() < 1) {
+                config cfg;
+                cfg.receiver = _self;
+                cfg.conf = "";
+                cfg.hash = "";
+                cfg.status = stat;
+                cfg.updated = blocktime;
+
+                u.configs.push_back(cfg);
+            } else {
+                u.configs[0].receiver = _self;
+                u.configs[0].conf = "";
+                u.configs[0].hash = "";
+                u.configs[0].status = stat;
+                u.configs[0].updated = blocktime;
+            }
+        });
+    }
+
+    ACTION owdinnetwork::logging( name account, uint128_t cpu, uint128_t memory, uint128_t disk, uint128_t bandwidth, uint128_t fsused, uint16_t statuscode, string status, string message ) {
+        require_auth( account );
+
+        uint64_t blocktime = publication_time();
+        
+        users_index user( _self, account.value);
+        auto itr = user.find(account.value);
+        eosio_assert( itr != user.end(), "failed find user, signup first" );
+
+        uint128_t reward = reward_balance( cpu, memory, disk, bandwidth, fsused );
+        
+        user.modify( itr, _self, [&]( auto& u ) {
+            if (u.usages.size() < 1) {
+                usage use;
+                use.cpu = cpu;
+                use.memory = memory;
+                use.disk = disk;
+                use.bandwidth = bandwidth;
+                use.fsused = fsused;
+                use.statuscode = statuscode;
+                use.status = status;
+                use.updated = blocktime;
+
+                u.usages.push_back(use);
+            } else {
+                u.usages[0].cpu = cpu;
+                u.usages[0].memory = memory;
+                u.usages[0].disk = disk;
+                u.usages[0].bandwidth = bandwidth;
+                u.usages[0].fsused = fsused;
+                u.usages[0].statuscode = statuscode;
+                u.usages[0].status = status;
+                u.usages[0].updated = blocktime;
+            }
+
+            u.reward += reward;
+        });
+    }
+
+     uint128_t owdinnetwork::reward_balance( uint128_t cpu, uint128_t memory, uint128_t disk, uint128_t bandwidth, uint128_t fsused ) {
+        const uint128_t cpu_factor = 1;
+        const uint128_t memory_factor = 1;
+        const uint128_t disk_factor = 1;
+        const uint128_t bandwidth_factor = 1;
+        const uint128_t fsused_factor = 1;
+        uint128_t val = 0;
+
+        cpu = factor(cpu, cpu_factor);
+        memory = factor(memory, memory_factor);
+        disk = factor(disk, disk_factor);
+        bandwidth = factor(bandwidth, bandwidth_factor);
+        fsused = factor(fsused, fsused_factor);
+
+        return (cpu + memory + disk + bandwidth + fsused);
+    }
+
+    uint128_t owdinnetwork::factor(uint128_t val, uint128_t fac) {
+        val = val * fac;
+        if (val < 1) {
+            return 0;
         }
+        return val / 100;
+    }
+
+    ACTION owdinnetwork::reward( name account, asset balance ) {
+        require_auth( _self );
+        
+        users_index user( _self, account.value);
+        auto itr = user.find(account.value);
+        eosio_assert( itr != user.end(), "failed find user, signup first" );
+
+        uint128_t reward = itr->reward;
+
+        auto symbol = balance.symbol;
+        eosio_assert( symbol.is_valid(), "invalid symbol name" );
+
+        auto symbol_name = symbol.code().raw();
+        currency_index currency_table( _self, symbol_name );
+        auto existing_currency = currency_table.find( symbol_name );
+        eosio_assert( existing_currency != currency_table.end(), "token with symbol does not exist. create token before issue" );
+
+        user.modify( itr, _self, [&]( auto& u ) {
+            u.reward -= reward;
+        });
+
+        balance.amount = reward;
+        add_supply( balance );
+        add_balance( account, balance, account );
     }
 }
 
-EOSIO_ABI( owdin::owdinnetwork, (debug)(create)(issue)(transfer)(reward)(burn)(signup)(reset)(activate)(settings)(remove)(initial)(clear)(update)(logging)(regpool)(staking)(unstaking)(price)(upgrade) )
+EOSIO_DISPATCH( owdin::owdinnetwork, (create)(issue)(transfer)(burn)(signup)(set)(check)(logging)(reward) )

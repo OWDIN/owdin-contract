@@ -7,10 +7,7 @@
 # enviroment 
 initial.sh
 log/*
+logs/*
 testcase/*
 enviroments
 doc/Constellation.md
-
-# compiled file
-owdinnetwork/owdinnetwork.wasm
-owdinnetwork/owdinnetwork.wast

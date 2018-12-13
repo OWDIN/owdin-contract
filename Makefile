@@ -1,35 +1,27 @@
-CPP=/usr/local/eosio/bin/eosiocpp
+PROJECT=owdinnetwork/owdinnetwork
 CLEOS=cli set contract
 SOURCE=owdinnetwork
-TARGET=owdinnetwork/owdinnetwork
-WASTLOGS=log/wast_stdout.txt 2> log/wast_stderr.txt
-ABILOGS=log/abi_stdout.txt 2> log/abi_stderr.txt
+CPP=/usr/local/bin/eosio-cpp
+ACCOUNT=owdineosio11
+ABIGEN=/usr/local/bin/eosio-abigen
 
+all: wasm abi clear build
 
-all: clear build deploy
-
-wast:
-	$(CPP) -o $(TARGET).wast $(TARGET).cpp  > $(WASTLOGS)
+wasm:
+	${CPP} ${PROJECT}.cpp -o ${PROJECT}.wasm > logs/wasm_stdout.txt 2> logs/wasm_stderr.txt
 
 abi:
-	$(CPP) -g $(TARGET).abi $(TARGET).cpp  > $(ABILOGS)
+	${ABIGEN} ${PROJECT}.cpp --contract=${SOURCE} --output=${PROJECT}.abi > logs/abi_stdout.txt 2> logs/abi_stderr.txt
 
-build: wast abi
+build: wasm abi
 
-del_log:
-	rm -f log/*
-
-del_wasm:
-	rm -f $(TARGET).wast
-	rm -f $(TARGET).wasm
-
-del_abi:
-	rm -f $(TARGET).abi
-
-clear: del_log del_wasm del_abi
+clean:
+	rm ${PROJECT}.abi
+	rm ${PROJECT}.wasm
+	rm ${PROJECT}.wast
+	rm logs/*
 
 deploy:
-	$(CLEOS) $(SOURCE) $(SOURCE)/ 
+	$(CLEOS) $(ACCOUNT) $(SOURCE)/
 
-.PHONY: clear build
-
+.PHONY: wasm abi clear build
