@@ -11,3 +11,4 @@ logs/*
 testcase/*
 enviroments
 doc/Constellation.md
+build/
