@@ -340,6 +340,21 @@ namespace owdin {
         add_supply( balance );
         add_balance( account, balance, account );
     }
+
+    ACTION owdinnetwork::activate( name account, bool activate ) {
+        require_auth( _self );
+
+        users_index user( _self, account.value);
+        auto itr = user.find(account.value);
+
+        user.modify( itr, _self, [&]( auto& u ) {
+            if (activate) {
+                u.isactive = true;
+            } else {
+                u.isactive = false;
+            }
+        });
+    }
 }
 
-EOSIO_DISPATCH( owdin::owdinnetwork, (create)(issue)(transfer)(burn)(signup)(set)(check)(logging)(reward) )
+EOSIO_DISPATCH( owdin::owdinnetwork, (create)(issue)(transfer)(burn)(signup)(set)(check)(logging)(reward)(activate) )

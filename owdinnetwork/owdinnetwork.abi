@@ -1,5 +1,5 @@
 {
-    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Thu Dec 13 20:27:37 2018",
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Mon Dec 17 16:21:09 2018",
     "version": "eosio::abi/1.1",
     "structs": [
         {
@@ -9,6 +9,20 @@
                 {
                     "name": "balance",
                     "type": "asset"
+                }
+            ]
+        },
+        {
+            "name": "activate",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "activate",
+                    "type": "bool"
                 }
             ]
         },
@@ -293,6 +307,42 @@
             ]
         },
         {
+            "name": "status",
+            "base": "",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "period",
+                    "type": "uint16"
+                },
+                {
+                    "name": "msg",
+                    "type": "string"
+                },
+                {
+                    "name": "updated",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "temp",
+            "base": "",
+            "fields": [
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "updated",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
             "name": "transfer",
             "base": "",
             "fields": [
@@ -377,6 +427,18 @@
                     "type": "usage[]"
                 },
                 {
+                    "name": "stat",
+                    "type": "status[]"
+                },
+                {
+                    "name": "tmp1",
+                    "type": "temp[]"
+                },
+                {
+                    "name": "tmp2",
+                    "type": "temp[]"
+                },
+                {
                     "name": "isactive",
                     "type": "bool"
                 },
@@ -393,6 +455,11 @@
     ],
     "types": [],
     "actions": [
+        {
+            "name": "activate",
+            "type": "activate",
+            "ricardian_contract": ""
+        },
         {
             "name": "burn",
             "type": "burn",

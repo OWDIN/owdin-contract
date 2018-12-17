@@ -26,6 +26,7 @@ namespace owdin {
             ACTION check( name account, string stat );
             ACTION logging( name account, uint128_t cpu, uint128_t memory, uint128_t disk, uint128_t bandwidth, uint128_t fsused, uint16_t statuscode, string status, string message );
             ACTION reward( name account, asset balance );
+            ACTION activate( name account, bool activate );
 
             // Structure
             struct specific {
@@ -55,10 +56,22 @@ namespace owdin {
                 uint128_t memory;     // memory usage
                 uint128_t disk;       // disk usage
                 uint128_t bandwidth;  // network bandwidth usage
-                uint128_t fsused;     // file system usage
+                uint128_t fsused;     // file system usa`ge
                 uint16_t  statuscode; // device status code
                 string    status;     // device status
                 uint64_t  updated;    // updated time
+            };
+
+            struct status {
+                string   name;    // 
+                uint64_t period;  // 
+                string   msg;     // 
+                uint64_t updated; // 
+            };
+
+            struct temp {
+                string   name;
+                uint64_t updated;
             };
 
             // Multi Index
@@ -83,6 +96,9 @@ namespace owdin {
                 vector<specific> spec;       // device h/w spec
                 vector<config>   configs;    // 
                 vector<usage>    usages;     //
+                vector<status>   stat;       //
+                vector<temp>     tmp1;       //
+                vector<temp>     tmp2;       //
                 bool             isactive;   // activated user
                 uint64_t         created;    // 
                 uint64_t         updated;    // 
