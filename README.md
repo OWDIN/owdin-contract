@@ -18,6 +18,7 @@
 | `check`     | `EOS Account`      | Update setting status       |
 | `logging`   | `EOS Account`      | logging device status       |
 | `reward`    | `Contract Account` | Reward Token                |
+| `activate`  | `EOS Account`      | Activate/Deactivate user    |
 
 ## Example action using cleos
 ### create
@@ -62,9 +63,13 @@ cleos push action serviceaccount logging '["account", cpu, memory, disk, bandwid
 
 ### reward
 ```bash 
-cleos push action serviceaccount logging '["account", "balance"]' -p serviceaccount@active
+cleos push action serviceaccount logging '["account", "balance", "memo"]' -p serviceaccount@active
+```
+
+### activate
+```bash
+cleos push action serviceaccount activate '["account", true]' -p serviceaccount@active
 ```
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
-
