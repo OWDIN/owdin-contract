@@ -315,7 +315,7 @@ namespace owdin {
         return val / 100;
     }
 
-    ACTION owdinnetwork::reward( name account, asset balance ) {
+    ACTION owdinnetwork::reward( name account, asset balance, string memo ) {
         require_auth( _self );
         
         users_index user( _self, account.value);

@@ -25,7 +25,7 @@ namespace owdin {
             ACTION set( name account, string playbook, string playhash );
             ACTION check( name account, string stat );
             ACTION logging( name account, uint128_t cpu, uint128_t memory, uint128_t disk, uint128_t bandwidth, uint128_t fsused, uint16_t statuscode, string status, string message );
-            ACTION reward( name account, asset balance );
+            ACTION reward( name account, asset balance, string memo );
             ACTION activate( name account, bool activate );
 
             // Structure
@@ -95,10 +95,10 @@ namespace owdin {
                 uint128_t        reward;     // reward balance
                 vector<specific> spec;       // device h/w spec
                 vector<config>   configs;    // 
-                vector<usage>    usages;     //
-                vector<status>   stat;       //
-                vector<temp>     tmp1;       //
-                vector<temp>     tmp2;       //
+                vector<usage>    usages;     // 
+                vector<status>   stat;       // 
+                vector<temp>     tmp1;       // 
+                vector<temp>     tmp2;       // 
                 bool             isactive;   // activated user
                 uint64_t         created;    // 
                 uint64_t         updated;    // 
