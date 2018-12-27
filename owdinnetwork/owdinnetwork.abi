@@ -1,5 +1,5 @@
 {
-    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Mon Dec 17 16:21:09 2018",
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Thu Dec 20 15:08:06 2018",
     "version": "eosio::abi/1.1",
     "structs": [
         {
@@ -23,6 +23,32 @@
                 {
                     "name": "activate",
                     "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "addmon",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "proc",
+                    "type": "string"
+                },
+                {
+                    "name": "port",
+                    "type": "uint64"
+                },
+                {
+                    "name": "key",
+                    "type": "uint16"
                 }
             ]
         },
@@ -179,6 +205,50 @@
             ]
         },
         {
+            "name": "monitor",
+            "base": "",
+            "fields": [
+                {
+                    "name": "key",
+                    "type": "uint16"
+                },
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "proc",
+                    "type": "string"
+                },
+                {
+                    "name": "port",
+                    "type": "uint64"
+                },
+                {
+                    "name": "stat",
+                    "type": "bool"
+                },
+                {
+                    "name": "updated",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "removemon",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "key",
+                    "type": "uint16"
+                }
+            ]
+        },
+        {
             "name": "reward",
             "base": "",
             "fields": [
@@ -189,6 +259,10 @@
                 {
                     "name": "balance",
                     "type": "asset"
+                },
+                {
+                    "name": "memo",
+                    "type": "string"
                 }
             ]
         },
@@ -311,20 +385,20 @@
             "base": "",
             "fields": [
                 {
-                    "name": "name",
-                    "type": "string"
+                    "name": "account",
+                    "type": "name"
                 },
                 {
-                    "name": "period",
+                    "name": "key",
                     "type": "uint16"
                 },
                 {
-                    "name": "msg",
-                    "type": "string"
+                    "name": "status",
+                    "type": "bool"
                 },
                 {
-                    "name": "updated",
-                    "type": "uint64"
+                    "name": "memo",
+                    "type": "string"
                 }
             ]
         },
@@ -428,7 +502,7 @@
                 },
                 {
                     "name": "stat",
-                    "type": "status[]"
+                    "type": "monitor[]"
                 },
                 {
                     "name": "tmp1",
@@ -458,6 +532,11 @@
         {
             "name": "activate",
             "type": "activate",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "addmon",
+            "type": "addmon",
             "ricardian_contract": ""
         },
         {
@@ -491,6 +570,11 @@
             "ricardian_contract": ""
         },
         {
+            "name": "removemon",
+            "type": "removemon",
+            "ricardian_contract": ""
+        },
+        {
             "name": "reward",
             "type": "reward",
             "ricardian_contract": ""
@@ -503,6 +587,11 @@
         {
             "name": "signup",
             "type": "signup",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "status",
+            "type": "status",
             "ricardian_contract": ""
         },
         {

@@ -24,6 +24,9 @@ namespace owdin {
             ACTION signup( name account, string pubkey, string uidx, string idx, uint128_t bandwidth, uint128_t memory, uint128_t cpu, uint128_t disk, uint128_t netype, uint8_t usertype );
             ACTION set( name account, string playbook, string playhash );
             ACTION check( name account, string stat );
+            ACTION addmon( name account, string name, string proc, uint64_t port, uint16_t key );
+            ACTION removemon( name account, uint16_t key );
+            ACTION status( name account, uint16_t key, bool status, string memo );
             ACTION logging( name account, uint128_t cpu, uint128_t memory, uint128_t disk, uint128_t bandwidth, uint128_t fsused, uint16_t statuscode, string status, string message );
             ACTION reward( name account, asset balance, string memo );
             ACTION activate( name account, bool activate );
@@ -56,17 +59,19 @@ namespace owdin {
                 uint128_t memory;     // memory usage
                 uint128_t disk;       // disk usage
                 uint128_t bandwidth;  // network bandwidth usage
-                uint128_t fsused;     // file system usa`ge
+                uint128_t fsused;     // file system usage
                 uint16_t  statuscode; // device status code
                 string    status;     // device status
                 uint64_t  updated;    // updated time
             };
 
-            struct status {
-                string   name;    // 
-                uint64_t period;  // 
-                string   msg;     // 
-                uint64_t updated; // 
+            struct monitor {
+                uint16_t key;     // index
+                string   name;    // status name
+                string   proc;    // process name
+                uint64_t port;    // process port number
+                bool     stat;    // status
+                uint64_t updated; // updated time
             };
 
             struct temp {
@@ -91,22 +96,22 @@ namespace owdin {
             };
 
             TABLE users {
-                name             account;    // 
+                name             account;    //
                 uint128_t        reward;     // reward balance
                 vector<specific> spec;       // device h/w spec
-                vector<config>   configs;    // 
-                vector<usage>    usages;     // 
-                vector<status>   stat;       // 
-                vector<temp>     tmp1;       // 
-                vector<temp>     tmp2;       // 
+                vector<config>   configs;    //
+                vector<usage>    usages;     //
+                vector<monitor>  stat;       //
+                vector<temp>     tmp1;       //
+                vector<temp>     tmp2;       //
                 bool             isactive;   // activated user
-                uint64_t         created;    // 
-                uint64_t         updated;    // 
+                uint64_t         created;    //
+                uint64_t         updated;    //
 
                 uint64_t primary_key() const { return account.value; }
             };
 
-            using account_index = eosio::multi_index<"accounts"_n, account>;
+            using account_index = multi_index<"accounts"_n, account>;
             using currency_index = multi_index<"stat"_n, currency_stats, indexed_by< "byissuer"_n, const_mem_fun< currency_stats, uint64_t, &currency_stats::get_issuer>>>;
             using users_index = multi_index<"users"_n, users>;
 

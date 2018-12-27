@@ -2,7 +2,7 @@ PROJECT=owdinnetwork/owdinnetwork
 CLEOS=cli set contract
 SOURCE=owdinnetwork
 CPP=/usr/local/bin/eosio-cpp
-ACCOUNT=owdineosio11
+ACCOUNT=owdinnetwork
 ABIGEN=/usr/local/bin/eosio-abigen
 
 all: wasm abi clear build

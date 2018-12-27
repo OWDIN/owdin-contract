@@ -3,7 +3,7 @@
 namespace owdin {
     ACTION owdinnetwork::debug( name account ) {
         const char* ver_info = "v0.1.1";
-        print( "[ ", ver_info, " - ", name{_self}, " ] : ", name{account}, "" );
+        print( "[ ", ver_info, " - ", name{_self}, " ] : ", name{account} );
     }
 
     ACTION owdinnetwork::create( asset maximum_supply ) {
@@ -18,7 +18,7 @@ namespace owdin {
         eosio_assert( maximum_supply.amount > 0, "max-supply must be positive");
 
         asset supply(0, symbol( symbol_code( symbol_name ), 4) );
-        
+
         currency_table.emplace( _self, [&]( auto& currency ) {
             currency.supply = supply;
             currency.max_supply = maximum_supply;
@@ -63,7 +63,7 @@ namespace owdin {
         eosio_assert( quantity.amount > 0, "must transfer positive quantity" );
         eosio_assert( quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
         eosio_assert( memo.size() <= 256, "memo has more than 256 bytes" );
-    
+
         sub_balance( from, quantity );
         add_balance( to, quantity, from );
     }
@@ -92,28 +92,28 @@ namespace owdin {
     }
 
     void owdinnetwork::sub_balance( name owner, asset value ) {
-        account_index from_acnts( _self, owner.value );
-        const auto& from = from_acnts.get( value.symbol.code().raw(), "no balance object found" );
+        account_index accounts( _self, owner.value );
+        const auto& from = accounts.get( value.symbol.code().raw(), "no balance object found" );
         eosio_assert( from.balance.amount >= value.amount, "overdrawn balance" );
 
         if( from.balance.amount == value.amount ) {
-            from_acnts.erase( from );
+            accounts.erase( from );
         } else {
-            from_acnts.modify( from, owner, [&]( auto& a ) {
+            accounts.modify( from, _self, [&]( auto& a ) {
                 a.balance -= value;
             });
         }
     }
 
     void owdinnetwork::add_balance( name owner, asset value, name ram_payer ) {
-        account_index to_accounts( _self, owner.value );
-        auto to = to_accounts.find( value.symbol.code().raw() );
-        if( to == to_accounts.end() ) {
-            to_accounts.emplace( ram_payer, [&]( auto& a ){
+        account_index accounts( _self, owner.value );
+        auto to = accounts.find( value.symbol.code().raw() );
+        if( to == accounts.end() ) {
+            accounts.emplace( ram_payer, [&]( auto& a ){
                 a.balance = value;
             });
         } else {
-            to_accounts.modify( to, _self, [&]( auto& a ) {
+            accounts.modify( to, _self, [&]( auto& a ) {
                 a.balance += value;
             });
         }
@@ -134,14 +134,14 @@ namespace owdin {
         currency_index currency_table( _self, symbol_name );
         auto current_currency = currency_table.find( symbol_name );
 
-        currency_table.modify( current_currency, name(0), [&]( auto& currency ) {
+        currency_table.modify( current_currency, _self, [&]( auto& currency ) {
             currency.supply += quantity;
         });
     }
 
     ACTION owdinnetwork::signup( name account, string pubkey, string uidx, string idx, uint128_t bandwidth, uint128_t memory, uint128_t cpu, uint128_t disk, uint128_t netype, uint8_t usertype ) {
         require_auth( account );
-        
+
         uint64_t blocktime = publication_time();
 
         users_index user( _self, account.value);
@@ -195,13 +195,11 @@ namespace owdin {
         require_auth( _self );
 
         uint64_t blocktime = publication_time();
-                
+
         users_index user( _self, account.value);
         auto itr = user.find(account.value);
         eosio_assert( itr != user.end(), "failed find user, signup first" );
 
-        
-        
         user.modify( itr, _self, [&]( auto& u ) {
             if (u.configs.size() < 1) {
                 config cfg;
@@ -222,15 +220,13 @@ namespace owdin {
 
     ACTION owdinnetwork::check( name account, string stat ) {
         require_auth( account );
-        
+
         uint64_t blocktime = publication_time();
 
         users_index user( _self, account.value);
         auto itr = user.find(account.value);
         eosio_assert( itr != user.end(), "failed find user, signup first" );
 
-
-        
         user.modify( itr, _self, [&]( auto& u ) {
             if (u.configs.size() < 1) {
                 config cfg;
@@ -255,13 +251,13 @@ namespace owdin {
         require_auth( account );
 
         uint64_t blocktime = publication_time();
-        
+
         users_index user( _self, account.value);
         auto itr = user.find(account.value);
         eosio_assert( itr != user.end(), "failed find user, signup first" );
 
         uint128_t reward = reward_balance( cpu, memory, disk, bandwidth, fsused );
-        
+
         user.modify( itr, _self, [&]( auto& u ) {
             if (u.usages.size() < 1) {
                 usage use;
@@ -317,7 +313,7 @@ namespace owdin {
 
     ACTION owdinnetwork::reward( name account, asset balance, string memo ) {
         require_auth( _self );
-        
+
         users_index user( _self, account.value);
         auto itr = user.find(account.value);
         eosio_assert( itr != user.end(), "failed find user, signup first" );
@@ -348,13 +344,59 @@ namespace owdin {
         auto itr = user.find(account.value);
 
         user.modify( itr, _self, [&]( auto& u ) {
-            if (activate) {
-                u.isactive = true;
+            u.isactive = activate;
+        });
+    }
+
+    ACTION owdinnetwork::addmon( name account, string name, string proc, uint64_t port, uint16_t key ) {
+        require_auth( _self );
+        uint64_t blocktime = publication_time();
+
+        users_index user( _self, account.value);
+        auto itr = user.find(account.value);
+
+        user.modify( itr, _self, [&]( auto& u ) {
+            if (key < 0) {
+                monitor stat;
+                stat.key = u.stat.size();
+                stat.name = name;
+                stat.proc = proc;
+                stat.port = port;
+                stat.updated = blocktime;
+
+                u.stat.push_back(stat);
             } else {
-                u.isactive = false;
+                u.stat[key].name = name;
+                u.stat[key].proc = proc;
+                u.stat[key].port = port;
+                u.stat[key].updated = blocktime;
             }
+        });
+    }
+
+    ACTION owdinnetwork::removemon( name account, uint16_t key ) {
+        require_auth( _self );
+
+        users_index user( _self, account.value);
+        auto itr = user.find(account.value);
+
+        user.modify( itr, _self, [&]( auto& u ) {
+            u.stat.erase(u.stat.begin() + key);
+        });
+    }
+
+    ACTION owdinnetwork::status( name account, uint16_t key, bool status, string memo ) {
+        require_auth( account );
+        uint64_t blocktime = publication_time();
+
+        users_index user( _self, account.value);
+        auto itr = user.find(account.value);
+
+        user.modify( itr, _self, [&]( auto& u ) {
+            u.stat[key].stat = status;
+            u.stat[key].updated = blocktime;
         });
     }
 }
 
-EOSIO_DISPATCH( owdin::owdinnetwork, (create)(issue)(transfer)(burn)(signup)(set)(check)(logging)(reward)(activate) )
+EOSIO_DISPATCH( owdin::owdinnetwork, (debug)(create)(issue)(transfer)(burn)(signup)(set)(check)(logging)(reward)(activate)(addmon)(removemon)(status) )
