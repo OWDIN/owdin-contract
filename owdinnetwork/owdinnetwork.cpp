@@ -139,7 +139,7 @@ namespace owdin {
         });
     }
 
-    ACTION owdinnetwork::signup( name account, string pubkey, string uidx, string idx, uint128_t bandwidth, uint128_t memory, uint128_t cpu, uint128_t disk, uint128_t netype, uint8_t usertype ) {
+    ACTION owdinnetwork::signup( name account, string pubkey, string uidx, string idx, string uuid ) {
         require_auth( account );
 
         uint64_t blocktime = publication_time();
@@ -166,12 +166,7 @@ namespace owdin {
                 spec.uidx = uidx;
                 spec.pubkey = pubkey;
                 spec.idx = idx;
-                spec.bandwidth = bandwidth;
-                spec.cpu = cpu;
-                spec.memory = memory;
-                spec.disk = disk;
-                spec.netype = netype;
-                spec.usertype = usertype;
+                spec.uuid = uuid;
                 spec.created = blocktime;
                 spec.updated = blocktime;
 
@@ -180,12 +175,7 @@ namespace owdin {
                 u.spec[0].uidx = uidx;
                 u.spec[0].pubkey = pubkey;
                 u.spec[0].idx = idx;
-                u.spec[0].bandwidth = bandwidth;
-                u.spec[0].cpu = cpu;
-                u.spec[0].memory = memory;
-                u.spec[0].disk = disk;
-                u.spec[0].netype = netype;
-                u.spec[0].usertype = usertype;
+                u.spec[0].uuid = uuid;
                 u.spec[0].updated = blocktime;
             }
         });
@@ -218,7 +208,7 @@ namespace owdin {
         });
     }
 
-    ACTION owdinnetwork::check( name account, string stat ) {
+    ACTION owdinnetwork::check( name account, string result ) {
         require_auth( account );
 
         uint64_t blocktime = publication_time();
@@ -233,7 +223,7 @@ namespace owdin {
                 cfg.receiver = _self;
                 cfg.conf = "";
                 cfg.hash = "";
-                cfg.status = stat;
+                cfg.result = result;
                 cfg.updated = blocktime;
 
                 u.configs.push_back(cfg);
@@ -241,13 +231,13 @@ namespace owdin {
                 u.configs[0].receiver = _self;
                 u.configs[0].conf = "";
                 u.configs[0].hash = "";
-                u.configs[0].status = stat;
+                u.configs[0].result = result;
                 u.configs[0].updated = blocktime;
             }
         });
     }
 
-    ACTION owdinnetwork::logging( name account, uint128_t cpu, uint128_t memory, uint128_t disk, uint128_t bandwidth, uint128_t fsused, uint16_t statuscode, string status, string message ) {
+    ACTION owdinnetwork::logging( name account, uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused, uint16_t statuscode, string status, string message ) {
         require_auth( account );
 
         uint64_t blocktime = publication_time();
@@ -256,7 +246,7 @@ namespace owdin {
         auto itr = user.find(account.value);
         eosio_assert( itr != user.end(), "failed find user, signup first" );
 
-        uint128_t reward = reward_balance( cpu, memory, disk, bandwidth, fsused );
+        uint64_t reward = reward_balance( cpu, memory, disk, bandwidth, fsused );
 
         user.modify( itr, _self, [&]( auto& u ) {
             if (u.usages.size() < 1) {
@@ -286,13 +276,13 @@ namespace owdin {
         });
     }
 
-     uint128_t owdinnetwork::reward_balance( uint128_t cpu, uint128_t memory, uint128_t disk, uint128_t bandwidth, uint128_t fsused ) {
-        const uint128_t cpu_factor = 1;
-        const uint128_t memory_factor = 1;
-        const uint128_t disk_factor = 1;
-        const uint128_t bandwidth_factor = 1;
-        const uint128_t fsused_factor = 1;
-        uint128_t val = 0;
+     uint64_t owdinnetwork::reward_balance( uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused ) {
+        const uint64_t cpu_factor = 1;
+        const uint64_t memory_factor = 1;
+        const uint64_t disk_factor = 1;
+        const uint64_t bandwidth_factor = 1;
+        const uint64_t fsused_factor = 1;
+        uint64_t val = 0;
 
         cpu = factor(cpu, cpu_factor);
         memory = factor(memory, memory_factor);
@@ -303,7 +293,7 @@ namespace owdin {
         return (cpu + memory + disk + bandwidth + fsused);
     }
 
-    uint128_t owdinnetwork::factor(uint128_t val, uint128_t fac) {
+    uint64_t owdinnetwork::factor(uint64_t val, uint64_t fac) {
         val = val * fac;
         if (val < 1) {
             return 0;
@@ -318,7 +308,7 @@ namespace owdin {
         auto itr = user.find(account.value);
         eosio_assert( itr != user.end(), "failed find user, signup first" );
 
-        uint128_t reward = itr->reward;
+        uint64_t reward = itr->reward;
 
         auto symbol = balance.symbol;
         eosio_assert( symbol.is_valid(), "invalid symbol name" );

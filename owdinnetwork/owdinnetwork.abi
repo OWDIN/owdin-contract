@@ -1,5 +1,5 @@
 {
-    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Thu Dec 20 15:08:06 2018",
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Mon Jan 14 10:48:44 2019",
     "version": "eosio::abi/1.1",
     "structs": [
         {
@@ -79,7 +79,7 @@
                     "type": "name"
                 },
                 {
-                    "name": "stat",
+                    "name": "result",
                     "type": "string"
                 }
             ]
@@ -101,7 +101,7 @@
                     "type": "string"
                 },
                 {
-                    "name": "status",
+                    "name": "result",
                     "type": "string"
                 },
                 {
@@ -172,23 +172,23 @@
                 },
                 {
                     "name": "cpu",
-                    "type": "uint128"
+                    "type": "uint64"
                 },
                 {
                     "name": "memory",
-                    "type": "uint128"
+                    "type": "uint64"
                 },
                 {
                     "name": "disk",
-                    "type": "uint128"
+                    "type": "uint64"
                 },
                 {
                     "name": "bandwidth",
-                    "type": "uint128"
+                    "type": "uint64"
                 },
                 {
                     "name": "fsused",
-                    "type": "uint128"
+                    "type": "uint64"
                 },
                 {
                     "name": "statuscode",
@@ -305,28 +305,8 @@
                     "type": "string"
                 },
                 {
-                    "name": "bandwidth",
-                    "type": "uint128"
-                },
-                {
-                    "name": "memory",
-                    "type": "uint128"
-                },
-                {
-                    "name": "cpu",
-                    "type": "uint128"
-                },
-                {
-                    "name": "disk",
-                    "type": "uint128"
-                },
-                {
-                    "name": "netype",
-                    "type": "uint128"
-                },
-                {
-                    "name": "usertype",
-                    "type": "uint8"
+                    "name": "uuid",
+                    "type": "string"
                 }
             ]
         },
@@ -347,28 +327,8 @@
                     "type": "string"
                 },
                 {
-                    "name": "bandwidth",
-                    "type": "uint128"
-                },
-                {
-                    "name": "cpu",
-                    "type": "uint128"
-                },
-                {
-                    "name": "memory",
-                    "type": "uint128"
-                },
-                {
-                    "name": "disk",
-                    "type": "uint128"
-                },
-                {
-                    "name": "netype",
-                    "type": "uint8"
-                },
-                {
-                    "name": "usertype",
-                    "type": "uint8"
+                    "name": "uuid",
+                    "type": "string"
                 },
                 {
                     "name": "updated",
@@ -444,23 +404,23 @@
             "fields": [
                 {
                     "name": "cpu",
-                    "type": "uint128"
+                    "type": "uint64"
                 },
                 {
                     "name": "memory",
-                    "type": "uint128"
+                    "type": "uint64"
                 },
                 {
                     "name": "disk",
-                    "type": "uint128"
+                    "type": "uint64"
                 },
                 {
                     "name": "bandwidth",
-                    "type": "uint128"
+                    "type": "uint64"
                 },
                 {
                     "name": "fsused",
-                    "type": "uint128"
+                    "type": "uint64"
                 },
                 {
                     "name": "statuscode",
@@ -486,7 +446,7 @@
                 },
                 {
                     "name": "reward",
-                    "type": "uint128"
+                    "type": "uint64"
                 },
                 {
                     "name": "spec",

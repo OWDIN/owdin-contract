@@ -21,48 +21,43 @@ namespace owdin {
             ACTION burn( name account, asset quantity, string memo );
 
             // OWDIN Action
-            ACTION signup( name account, string pubkey, string uidx, string idx, uint128_t bandwidth, uint128_t memory, uint128_t cpu, uint128_t disk, uint128_t netype, uint8_t usertype );
+            ACTION signup( name account, string pubkey, string uidx, string idx, string uuid );
             ACTION set( name account, string playbook, string playhash );
-            ACTION check( name account, string stat );
+            ACTION check( name account, string result );
             ACTION addmon( name account, string name, string proc, uint64_t port, uint16_t key );
             ACTION removemon( name account, uint16_t key );
             ACTION status( name account, uint16_t key, bool status, string memo );
-            ACTION logging( name account, uint128_t cpu, uint128_t memory, uint128_t disk, uint128_t bandwidth, uint128_t fsused, uint16_t statuscode, string status, string message );
+            ACTION logging( name account, uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused, uint16_t statuscode, string status, string message );
             ACTION reward( name account, asset balance, string memo );
             ACTION activate( name account, bool activate );
 
             // Structure
             struct specific {
-                string    uidx;       // unique device number
-                string    pubkey;     // user public key ( encrypt owdin public key )
-                string    idx;        // unique user index ( encrypt public ip address )
-                uint128_t bandwidth;  // network bandwidth ( user select data )
-                uint128_t cpu;        // device cpu speed
-                uint128_t memory;     // device memory size
-                uint128_t disk;       // device disk size
-                uint8_t   netype;     // device network type ( NAT or Public )
-                uint8_t   usertype;   // user type ( public user or enterprise user )
-                uint64_t  updated;    // update time
-                uint64_t  created;    // create time
+                string   uidx;    // unique device index
+                string   pubkey;  // user public key
+                string   idx;     // unique user index
+                string   uuid;    // device uuid
+                uint64_t updated; // update time
+                uint64_t created; // create time
             };
 
             struct config {
-                name     receiver;    // receiver
-                string   conf;        // config data
-                string   hash;        // config hash string
-                string   status;      // work status
-                uint64_t updated;     // update date
+                name     receiver; // receiver
+                string   conf;     // config data
+                string   hash;     // config hash string
+                string   result;   // work result
+                uint64_t updated;  // update date
             };
 
             struct usage {
-                uint128_t cpu;        // cpu usage
-                uint128_t memory;     // memory usage
-                uint128_t disk;       // disk usage
-                uint128_t bandwidth;  // network bandwidth usage
-                uint128_t fsused;     // file system usage
-                uint16_t  statuscode; // device status code
-                string    status;     // device status
-                uint64_t  updated;    // updated time
+                uint64_t cpu;        // cpu usage
+                uint64_t memory;     // memory usage
+                uint64_t disk;       // disk usage
+                uint64_t bandwidth;  // network bandwidth usage
+                uint64_t fsused;     // file system usage
+                uint16_t statuscode; // device status code
+                string   status;     // device status
+                uint64_t updated;    // updated time
             };
 
             struct monitor {
@@ -96,17 +91,17 @@ namespace owdin {
             };
 
             TABLE users {
-                name             account;    //
-                uint128_t        reward;     // reward balance
-                vector<specific> spec;       // device h/w spec
-                vector<config>   configs;    //
-                vector<usage>    usages;     //
-                vector<monitor>  stat;       //
-                vector<temp>     tmp1;       //
-                vector<temp>     tmp2;       //
-                bool             isactive;   // activated user
-                uint64_t         created;    //
-                uint64_t         updated;    //
+                name             account;  //
+                uint64_t         reward;   // reward balance
+                vector<specific> spec;     // device h/w spec
+                vector<config>   configs;  //
+                vector<usage>    usages;   //
+                vector<monitor>  stat;     //
+                vector<temp>     tmp1;     //
+                vector<temp>     tmp2;     //
+                bool             isactive; // activated user
+                uint64_t         created;  //
+                uint64_t         updated;  //
 
                 uint64_t primary_key() const { return account.value; }
             };
@@ -120,7 +115,7 @@ namespace owdin {
             void add_balance(name owner, asset value, name ram_payer);
             void sub_supply(asset quantity);
             void add_supply(asset quantity);
-            uint128_t reward_balance( uint128_t cpu, uint128_t memory, uint128_t disk, uint128_t bandwidth, uint128_t fsused );
-            uint128_t factor(uint128_t val, uint128_t fac);
+            uint64_t reward_balance( uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused );
+            uint64_t factor(uint64_t val, uint64_t fac);
     };
 }
