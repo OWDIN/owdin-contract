@@ -1,5 +1,5 @@
 {
-    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Mon Jan 14 10:48:44 2019",
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Wed Jan 16 19:32:27 2019",
     "version": "eosio::abi/1.1",
     "structs": [
         {
@@ -134,16 +134,6 @@
                 },
                 {
                     "name": "issuer",
-                    "type": "name"
-                }
-            ]
-        },
-        {
-            "name": "debug",
-            "base": "",
-            "fields": [
-                {
-                    "name": "account",
                     "type": "name"
                 }
             ]
@@ -302,7 +292,7 @@
                 },
                 {
                     "name": "idx",
-                    "type": "string"
+                    "type": "int32"
                 },
                 {
                     "name": "uuid",
@@ -324,7 +314,7 @@
                 },
                 {
                     "name": "idx",
-                    "type": "string"
+                    "type": "int32"
                 },
                 {
                     "name": "uuid",
@@ -512,11 +502,6 @@
         {
             "name": "create",
             "type": "create",
-            "ricardian_contract": ""
-        },
-        {
-            "name": "debug",
-            "type": "debug",
             "ricardian_contract": ""
         },
         {

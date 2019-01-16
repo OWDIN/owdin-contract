@@ -1,11 +1,6 @@
 #include "owdinnetwork.hpp"
 
 namespace owdin {
-    ACTION owdinnetwork::debug( name account ) {
-        const char* ver_info = "v0.1.1";
-        print( "[ ", ver_info, " - ", name{_self}, " ] : ", name{account} );
-    }
-
     ACTION owdinnetwork::create( asset maximum_supply ) {
         require_auth( _self );
         require_recipient( _self );
@@ -139,7 +134,7 @@ namespace owdin {
         });
     }
 
-    ACTION owdinnetwork::signup( name account, string pubkey, string uidx, string idx, string uuid ) {
+    ACTION owdinnetwork::signup( name account, string pubkey, string uidx, int idx, string uuid ) {
         require_auth( account );
 
         uint64_t blocktime = publication_time();
@@ -148,21 +143,7 @@ namespace owdin {
         auto itr = user.find(account.value);
         if ( itr == user.end() ) {
             user.emplace( _self, [&]( auto& u ) {
-                u.account = account;
-                u.isactive = true;
-                u.created = blocktime;
-                u.updated = blocktime;
-            });
-        }
-
-        user.modify( itr, _self, [&]( auto& u ) {
-            u.account = account;
-            u.isactive = true;
-            u.created = blocktime;
-            u.updated = blocktime;
-
-            if (u.spec.size() < 1) {
-                specific spec;
+                 specific spec;
                 spec.uidx = uidx;
                 spec.pubkey = pubkey;
                 spec.idx = idx;
@@ -170,15 +151,21 @@ namespace owdin {
                 spec.created = blocktime;
                 spec.updated = blocktime;
 
+                u.account = account;
                 u.spec.push_back(spec);
-            } else {
+                u.isactive = true;
+                u.created = blocktime;
+                u.updated = blocktime;
+            });
+        } else {
+            user.modify( itr, _self, [&]( auto& u ) {
                 u.spec[0].uidx = uidx;
                 u.spec[0].pubkey = pubkey;
                 u.spec[0].idx = idx;
                 u.spec[0].uuid = uuid;
                 u.spec[0].updated = blocktime;
-            }
-        });
+            });
+        }
     }
 
     ACTION owdinnetwork::set( name account, string playbook, string playhash ) {
@@ -237,7 +224,77 @@ namespace owdin {
         });
     }
 
-    ACTION owdinnetwork::logging( name account, uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused, uint16_t statuscode, string status, string message ) {
+    ACTION owdinnetwork::addmon( name account, string name, string proc, uint64_t port, uint16_t key ) {
+        require_auth( _self );
+        uint64_t blocktime = publication_time();
+
+        users_index user( _self, account.value);
+        auto itr = user.find(account.value);
+
+        user.modify( itr, _self, [&]( auto& u ) {
+            if (u.stat.size() < 1) {
+                monitor stat;
+                stat.key = u.stat.size();
+                stat.name = name;
+                stat.proc = proc;
+                stat.port = port;
+                stat.updated = blocktime;
+
+                u.stat.push_back(stat);
+            } else {
+                u.stat[key].name = name;
+                u.stat[key].proc = proc;
+                u.stat[key].port = port;
+                u.stat[key].updated = blocktime;
+            }
+        });
+    }
+
+    ACTION owdinnetwork::removemon( name account, uint16_t key ) {
+        require_auth( _self );
+
+        users_index user( _self, account.value);
+        auto itr = user.find(account.value);
+
+        user.modify( itr, _self, [&]( auto& u ) {
+            u.stat.erase(u.stat.begin() + key);
+        });
+    }
+
+    ACTION owdinnetwork::status( name account, uint16_t key, bool status, string memo ) {
+        require_auth( account );
+        uint64_t blocktime = publication_time();
+
+        users_index user( _self, account.value);
+        auto itr = user.find(account.value);
+
+        user.modify( itr, _self, [&]( auto& u ) {
+            u.stat[key].stat = status;
+            u.stat[key].updated = blocktime;
+        });
+    }
+
+    ACTION owdinnetwork::activate( name account, bool activate ) {
+        require_auth( _self );
+
+        users_index user( _self, account.value);
+        auto itr = user.find(account.value);
+
+        user.modify( itr, _self, [&]( auto& u ) {
+            u.isactive = activate;
+        });
+    }
+
+    ACTION owdinnetwork::logging(
+        name account
+        , uint64_t cpu
+        , uint64_t memory
+        , uint64_t disk
+        , uint64_t bandwidth
+        , uint64_t fsused
+        , uint16_t statuscode
+        , string status
+        , string message ) {
         require_auth( account );
 
         uint64_t blocktime = publication_time();
@@ -326,67 +383,6 @@ namespace owdin {
         add_supply( balance );
         add_balance( account, balance, account );
     }
-
-    ACTION owdinnetwork::activate( name account, bool activate ) {
-        require_auth( _self );
-
-        users_index user( _self, account.value);
-        auto itr = user.find(account.value);
-
-        user.modify( itr, _self, [&]( auto& u ) {
-            u.isactive = activate;
-        });
-    }
-
-    ACTION owdinnetwork::addmon( name account, string name, string proc, uint64_t port, uint16_t key ) {
-        require_auth( _self );
-        uint64_t blocktime = publication_time();
-
-        users_index user( _self, account.value);
-        auto itr = user.find(account.value);
-
-        user.modify( itr, _self, [&]( auto& u ) {
-            if (key < 0) {
-                monitor stat;
-                stat.key = u.stat.size();
-                stat.name = name;
-                stat.proc = proc;
-                stat.port = port;
-                stat.updated = blocktime;
-
-                u.stat.push_back(stat);
-            } else {
-                u.stat[key].name = name;
-                u.stat[key].proc = proc;
-                u.stat[key].port = port;
-                u.stat[key].updated = blocktime;
-            }
-        });
-    }
-
-    ACTION owdinnetwork::removemon( name account, uint16_t key ) {
-        require_auth( _self );
-
-        users_index user( _self, account.value);
-        auto itr = user.find(account.value);
-
-        user.modify( itr, _self, [&]( auto& u ) {
-            u.stat.erase(u.stat.begin() + key);
-        });
-    }
-
-    ACTION owdinnetwork::status( name account, uint16_t key, bool status, string memo ) {
-        require_auth( account );
-        uint64_t blocktime = publication_time();
-
-        users_index user( _self, account.value);
-        auto itr = user.find(account.value);
-
-        user.modify( itr, _self, [&]( auto& u ) {
-            u.stat[key].stat = status;
-            u.stat[key].updated = blocktime;
-        });
-    }
 }
 
-EOSIO_DISPATCH( owdin::owdinnetwork, (debug)(create)(issue)(transfer)(burn)(signup)(set)(check)(logging)(reward)(activate)(addmon)(removemon)(status) )
+EOSIO_DISPATCH( owdin::owdinnetwork, (create)(issue)(transfer)(burn)(signup)(set)(check)(addmon)(removemon)(status)(logging)(reward)(activate))

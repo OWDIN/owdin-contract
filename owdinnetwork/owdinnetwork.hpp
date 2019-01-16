@@ -10,10 +10,6 @@ namespace owdin {
             using contract::contract;
             owdinnetwork(name receiver, name code, datastream<const char *> ds)
                 : contract(receiver, code, ds) { }
-
-            // Debug Action
-            ACTION debug( name account );
-
             // Token Action
             ACTION create( asset maximum_supply );
             ACTION issue( asset quantity, string memo );
@@ -21,7 +17,7 @@ namespace owdin {
             ACTION burn( name account, asset quantity, string memo );
 
             // OWDIN Action
-            ACTION signup( name account, string pubkey, string uidx, string idx, string uuid );
+            ACTION signup( name account, string pubkey, string uidx, int idx, string uuid );
             ACTION set( name account, string playbook, string playhash );
             ACTION check( name account, string result );
             ACTION addmon( name account, string name, string proc, uint64_t port, uint16_t key );
@@ -35,7 +31,7 @@ namespace owdin {
             struct specific {
                 string   uidx;    // unique device index
                 string   pubkey;  // user public key
-                string   idx;     // unique user index
+                int      idx;     // unique user index
                 string   uuid;    // device uuid
                 uint64_t updated; // update time
                 uint64_t created; // create time
