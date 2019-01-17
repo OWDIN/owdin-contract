@@ -26,6 +26,7 @@ namespace owdin {
             ACTION logging( name account, uint64_t cpu, uint64_t memory, uint64_t disk, uint64_t bandwidth, uint64_t fsused, uint16_t statuscode, string status, string message );
             ACTION reward( name account, asset balance, string memo );
             ACTION activate( name account, bool activate );
+            ACTION setter( name account, string pubkey, string pin, string memo );
 
             // Structure
             struct specific {
@@ -70,7 +71,21 @@ namespace owdin {
                 uint64_t updated;
             };
 
+            struct manager {
+                string pubkey;
+                string pin;
+            };
+
             // Multi Index
+             TABLE controller {
+                name            owner;
+                vector<manager> manage;
+                uint64_t        created;
+                uint64_t        updated;
+
+                uint64_t primary_key() const { return owner.value; }
+            };
+
             TABLE currency_stats {
                 asset supply;
                 asset max_supply;
@@ -105,6 +120,7 @@ namespace owdin {
             using account_index = multi_index<"accounts"_n, account>;
             using currency_index = multi_index<"stat"_n, currency_stats, indexed_by< "byissuer"_n, const_mem_fun< currency_stats, uint64_t, &currency_stats::get_issuer>>>;
             using users_index = multi_index<"users"_n, users>;
+            using controller_index = multi_index<"controller"_n, controller>;
 
         private:
             void sub_balance(name owner, asset value);

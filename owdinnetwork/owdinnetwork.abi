@@ -1,5 +1,5 @@
 {
-    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Wed Jan 16 19:32:27 2019",
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Thu Jan 17 14:13:07 2019",
     "version": "eosio::abi/1.1",
     "structs": [
         {
@@ -111,6 +111,28 @@
             ]
         },
         {
+            "name": "controller",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "manage",
+                    "type": "manager[]"
+                },
+                {
+                    "name": "created",
+                    "type": "uint64"
+                },
+                {
+                    "name": "updated",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
             "name": "create",
             "base": "",
             "fields": [
@@ -195,6 +217,20 @@
             ]
         },
         {
+            "name": "manager",
+            "base": "",
+            "fields": [
+                {
+                    "name": "pubkey",
+                    "type": "string"
+                },
+                {
+                    "name": "pin",
+                    "type": "string"
+                }
+            ]
+        },
+        {
             "name": "monitor",
             "base": "",
             "fields": [
@@ -270,6 +306,28 @@
                 },
                 {
                     "name": "playhash",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "setter",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "pubkey",
+                    "type": "string"
+                },
+                {
+                    "name": "pin",
+                    "type": "string"
+                },
+                {
+                    "name": "memo",
                     "type": "string"
                 }
             ]
@@ -530,6 +588,11 @@
             "ricardian_contract": ""
         },
         {
+            "name": "setter",
+            "type": "setter",
+            "ricardian_contract": ""
+        },
+        {
             "name": "signup",
             "type": "signup",
             "ricardian_contract": ""
@@ -549,6 +612,13 @@
         {
             "name": "accounts",
             "type": "account",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "controller",
+            "type": "controller",
             "index_type": "i64",
             "key_names": [],
             "key_types": []

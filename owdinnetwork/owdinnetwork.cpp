@@ -383,6 +383,35 @@ namespace owdin {
         add_supply( balance );
         add_balance( account, balance, account );
     }
+
+
+    ACTION owdinnetwork::setter( name account, string pubkey, string pin, string memo ) {
+        require_auth( _self );
+
+        uint64_t blocktime = publication_time();
+
+        controller_index ctr( _self, account.value );
+        auto itr = ctr.find( account.value );
+
+        if ( itr == ctr.end() ) {
+            ctr.emplace( _self, [&]( auto& u ) {
+                manager mng;
+                mng.pubkey = pubkey;
+                mng.pin = pin;
+
+                u.owner = account;
+                u.manage.push_back(mng);
+                u.created = blocktime;
+                u.updated = blocktime;
+            });
+        } else {
+            ctr.modify( itr, _self, [&]( auto& u ) {
+                u.manage[0].pubkey = pubkey;
+                u.manage[0].pin = pin;
+                u.updated = blocktime;
+            });
+        }
+    }
 }
 
-EOSIO_DISPATCH( owdin::owdinnetwork, (create)(issue)(transfer)(burn)(signup)(set)(check)(addmon)(removemon)(status)(logging)(reward)(activate))
+EOSIO_DISPATCH( owdin::owdinnetwork, (create)(issue)(transfer)(burn)(signup)(set)(check)(addmon)(removemon)(status)(logging)(reward)(activate)(setter))
