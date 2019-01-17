@@ -1,5 +1,5 @@
 {
-    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Thu Jan 17 14:13:07 2019",
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Thu Jan 17 19:48:56 2019",
     "version": "eosio::abi/1.1",
     "structs": [
         {
@@ -350,7 +350,7 @@
                 },
                 {
                     "name": "idx",
-                    "type": "int32"
+                    "type": "uint32"
                 },
                 {
                     "name": "uuid",
@@ -372,7 +372,7 @@
                 },
                 {
                     "name": "idx",
-                    "type": "int32"
+                    "type": "uint32"
                 },
                 {
                     "name": "uuid",

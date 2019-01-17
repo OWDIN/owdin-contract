@@ -134,7 +134,7 @@ namespace owdin {
         });
     }
 
-    ACTION owdinnetwork::signup( name account, string pubkey, string uidx, int idx, string uuid ) {
+    ACTION owdinnetwork::signup( name account, string pubkey, string uidx, uint32_t idx, string uuid ) {
         require_auth( account );
 
         uint64_t blocktime = publication_time();

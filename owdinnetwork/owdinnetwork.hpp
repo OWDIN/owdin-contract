@@ -17,7 +17,7 @@ namespace owdin {
             ACTION burn( name account, asset quantity, string memo );
 
             // OWDIN Action
-            ACTION signup( name account, string pubkey, string uidx, int idx, string uuid );
+            ACTION signup( name account, string pubkey, string uidx, uint32_t idx, string uuid );
             ACTION set( name account, string playbook, string playhash );
             ACTION check( name account, string result );
             ACTION addmon( name account, string name, string proc, uint64_t port, uint16_t key );
@@ -32,7 +32,7 @@ namespace owdin {
             struct specific {
                 string   uidx;    // unique device index
                 string   pubkey;  // user public key
-                int      idx;     // unique user index
+                uint32_t idx;     // unique user index
                 string   uuid;    // device uuid
                 uint64_t updated; // update time
                 uint64_t created; // create time
