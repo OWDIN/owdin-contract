@@ -183,6 +183,7 @@ namespace owdin {
                 cfg.receiver = account;
                 cfg.conf = playbook;
                 cfg.hash = playhash;
+                cfg.result = "";
                 cfg.updated = blocktime;
 
                 u.configs.push_back(cfg);
@@ -190,6 +191,7 @@ namespace owdin {
                 u.configs[0].receiver = account;
                 u.configs[0].conf = playbook;
                 u.configs[0].hash = playhash;
+                u.configs[0].result = "";
                 u.configs[0].updated = blocktime;
             }
         });
